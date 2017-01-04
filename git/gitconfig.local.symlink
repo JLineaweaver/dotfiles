@@ -1,0 +1,5 @@
+[user]
+	name = Joshua Lineaweaver
+	email = JLineaweaver@gmail.com
+[credential]
+	helper = GIT_CREDENTIAL_HELPER
