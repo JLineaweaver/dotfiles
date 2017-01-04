@@ -1,9 +1,10 @@
 set nocompatible
+set t_Co=256
 filetype indent plugin on
 syntax on
 
 "Change color scheme
-:color desert
+"colorscheme badwolf
 :set background=dark
 
 " Better command-line completion
@@ -21,4 +22,7 @@ map <C-n> :NERDTreeToggle<CR>
 
 call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'sickill/vim-monokai'
 call plug#end()
+
+colo monokai
