@@ -3,20 +3,24 @@ set t_Co=256
 filetype indent plugin on
 syntax on
 
-"Change color scheme
-"colorscheme badwolf
-:set background=dark
+"Highlight matching
+set showmatch
 
 " Better command-line completion
 set wildmenu
+
 " Show partial commands in the last line of the screen
 set showcmd
 
 " Use case insensitive search, except when using capital letters
 set ignorecase
 set smartcase
+
 " Display line numbers on the left
 set number 
+
+"Enable folding
+set foldenable
 
 map <C-n> :NERDTreeToggle<CR>
 
@@ -25,4 +29,8 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'sickill/vim-monokai'
 call plug#end()
 
+"Change color scheme
+:set background=dark
 colo monokai
+
+
