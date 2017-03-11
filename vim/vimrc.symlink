@@ -1,10 +1,12 @@
 set nocompatible
-set t_Co=256
+"set t_Co=256
 filetype indent plugin on
 syntax on
 
 "Highlight matching
 set showmatch
+
+"set spell "]s for next
 
 " Better command-line completion
 set wildmenu
@@ -27,6 +29,7 @@ map <C-n> :NERDTreeToggle<CR>
 call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'sickill/vim-monokai'
+Plug 'vimwiki/vimwiki'
 call plug#end()
 
 "Change color scheme
