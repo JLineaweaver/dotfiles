@@ -70,3 +70,30 @@ local strategy = { 'exact', 'substring', 'fuzzy' }
 vim.g.completion_matching_strategy_list = strategy
 vim.g.diagnostic_enable_virtual_text = 1
 vim.g.space_before_virtual_text = 5
+
+-- commented options are defaults
+require('lspkind').init({
+    -- with_text = true,
+    -- symbol_map = {
+    --   Text = '',
+    --   Method = 'ƒ',
+    --   Function = '',
+    --   Constructor = '',
+    --   Variable = '',
+    --   Class = '',
+    --   Interface = 'ﰮ',
+    --   Module = '',
+    --   Property = '',
+    --   Unit = '',
+    --   Value = '',
+    --   Enum = '了',
+    --   Keyword = '',
+    --   Snippet = '﬌',
+    --   Color = '',
+    --   File = '',
+    --   Folder = '',
+    --   EnumMember = '',
+    --   Constant = '',
+    --   Struct = ''
+    -- },
+})

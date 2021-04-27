@@ -22,8 +22,8 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
-"Plug 'nvim-lua/diagnostic-nvim'
 Plug 'tjdevries/lsp_extensions.nvim'
+Plug 'onsails/lspkind-nvim'
 
 Plug 'leafgarland/typescript-vim'
 Plug 'prettier/vim-prettier', {
