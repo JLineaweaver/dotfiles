@@ -19,6 +19,9 @@ set nocompatible
 
 set autoread
 
+"Allow switch without saving
+set hidden
+
 "smarecase search
 :set ignorecase
 :set smartcase
@@ -69,8 +72,10 @@ nnoremap <leader>z :bp<CR>
 nnoremap <silent> <leader>/ :noh<CR>
 
 "nerdtree
-map <C-n> :NERDTreeToggle<CR>
-let NERDTreeShowHidden=1
+nnoremap <C-n> :NvimTreeToggle<CR>
+let g:nvim_tree_auto_open = 1 
+let g:nvim_tree_quit_on_open = 1
+let g:nvim_tree_follow = 1
 
 "Change tabs to spaces
 set expandtab
@@ -135,6 +140,7 @@ let g:terraform_fmt_on_save=1
 " lsp
 "source ~/.config/nvim/lsp.vim
 lua require("lsp")
+lua require("treesitter-nvim")
 " Use <Tab> and <S-Tab> to navigate through popup menu
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"

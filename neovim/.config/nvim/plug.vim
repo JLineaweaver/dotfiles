@@ -5,7 +5,6 @@ call plug#begin('~/local/share/nvim/site/plugged')
 
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'fatih/vim-go', { 'do': ':silent :GoUpdateBinaries' }
-Plug 'scrooloose/nerdtree'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
@@ -16,8 +15,13 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --no-bash' }
 Plug 'junegunn/fzf.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'ryanoasis/vim-devicons'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-"Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+"Tree
+Plug 'kyazdani42/nvim-web-devicons' 
+Plug 'kyazdani42/nvim-tree.lua'
+"Plug 'scrooloose/nerdtree'
+"Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
 "LSP
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
@@ -34,6 +38,8 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 Plug 'jceb/vim-orgmode'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-ruby/vim-ruby'
+
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  
 
 " Initialize plugin system
 call plug#end()
