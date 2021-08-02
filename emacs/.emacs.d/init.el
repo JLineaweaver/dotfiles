@@ -81,9 +81,36 @@
 
 ;; General dev
 (use-package lsp-mode
-  :straight t)
+  :straight t
+  :commands lsp
+  :hook ((typescript-mode go-mode) . lsp)
+  :bind (:map lsp-mode-map
+         ("TAB" . completion-at-point))
+  :custom (lsp-headerline-breadcrumb-enable nil))
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-file-watch-ignored-directories "/vendor/"))
+
+(jl/leader-key-def
+  "l"  '(:ignore t :which-key "lsp")
+  "ld" 'xref-find-definitions
+  "lr" 'xref-find-references
+  "ln" 'lsp-ui-find-next-reference
+  "lp" 'lsp-ui-find-prev-reference
+  "ls" 'counsel-imenu
+  "le" 'lsp-ui-flycheck-list
+  "lS" 'lsp-ui-sideline-mode
+  "lX" 'lsp-execute-code-action)
+
 (use-package lsp-ui
-     :straight t)
+  :after lsp
+  :straight t
+  :hook (lsp-mode . lsp-ui-mode)
+  :config
+  (setq lsp-ui-sideline-enable t)
+  (setq lsp-ui-sideline-show-hover nil)
+  (setq lsp-ui-doc-position 'bottom)
+  (lsp-ui-doc-show))
+
 (use-package company
      :straight t)
 (use-package flycheck
@@ -113,11 +140,47 @@
 
 ;; Go stuff
 (use-package go-mode
-     :straight t)
+  :straight t
+  :hook (go-mode . lsp-deferred))
 (setenv "PATH" (concat (getenv "PATH") "~/go/bin"))
 
-(require 'lsp-mode)
-(add-hook 'go-mode-hook #'lsp-deferred)
+;; Typescript stuff
+(use-package nvm
+  :defer t)
+
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :config
+  (setq typescript-indent-level 2))
+
+(defun dw/set-js-indentation ()
+  (setq js-indent-level 2)
+  (setq evil-shift-width js-indent-level)
+  (setq-default tab-width 2))
+
+(use-package js2-mode
+  :mode "\\.jsx?\\'"
+  :config
+  ;; Use js2-mode for Node scripts
+  (add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
+
+  ;; Don't use built-in syntax checking
+  (setq js2-mode-show-strict-warnings nil)
+
+  ;; Set up proper indentation in JavaScript and JSON files
+  (add-hook 'js2-mode-hook #'dw/set-js-indentation)
+  (add-hook 'json-mode-hook #'dw/set-js-indentation))
+
+(use-package apheleia
+  :config
+  (apheleia-global-mode +1))
+
+(use-package prettier-js
+  ;; :hook ((js2-mode . prettier-js-mode)
+  ;;        (typescript-mode . prettier-js-mode))
+  :config
+  (setq prettier-js-show-errors nil))
+
 
 ;; Docker stuff
 (use-package docker
