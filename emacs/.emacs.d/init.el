@@ -224,6 +224,21 @@
   "gF"  'magit-fetch-all
   "gr"  'magit-rebase)
 
+(use-package git-link
+  :commands git-link
+  :config
+  (setq git-link-open-in-browser t))
+(jl/leader-key-def
+    "gL"  'git-link)
+
+(use-package git-gutter
+  :straight git-gutter-fringe
+  :diminish
+  :hook ((text-mode . git-gutter-mode)
+         (prog-mode . git-gutter-mode))
+  :config
+  (setq git-gutter:update-interval 2))
+
 ;; Go stuff
 (use-package go-mode
   :straight t
