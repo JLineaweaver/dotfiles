@@ -45,7 +45,52 @@
      :straight t)
   (exec-path-from-shell-initialize)
   (setq dired-use-ls-dired nil))
- 
+
+;; Font stuff
+;;(set-face-attribute 'default nil :height 160)
+(set-face-attribute 'default nil
+                       :font "JetBrains Mono"
+                       :weight 'light
+                       :height 160)
+
+; Set the fixed pitch face
+(set-face-attribute 'fixed-pitch nil
+                    :font "JetBrains Mono"
+                    :weight 'light
+                    :height 160)
+
+;; Set the variable pitch face
+;;(set-face-attribute 'variable-pitch nil
+                    ;;;; :font "Cantarell"
+                    ;;:font "Iosevka Aile"
+                    ;;:height (jl/system-settings-get 'emacs/variable-face-size)
+                    ;;:weight 'light)
+
+(defun jl/replace-unicode-font-mapping (block-name old-font new-font)
+  (let* ((block-idx (cl-position-if
+                         (lambda (i) (string-equal (car i) block-name))
+                         unicode-fonts-block-font-mapping))
+         (block-fonts (cadr (nth block-idx unicode-fonts-block-font-mapping)))
+         (updated-block (cl-substitute new-font old-font block-fonts :test 'string-equal)))
+    (setf (cdr (nth block-idx unicode-fonts-block-font-mapping))
+          `(,updated-block))))
+
+(use-package unicode-fonts
+  :disabled
+  :if (not jl/is-termux)
+  :custom
+  (unicode-fonts-skip-font-groups '(low-quality-glyphs))
+  :config
+  ;; Fix the font mappings to use the right emoji font
+  (mapcar
+    (lambda (block-name)
+      (jl/replace-unicode-font-mapping block-name "Apple Color Emoji" "Noto Color Emoji"))
+    '("Dingbats"
+      "Emoticons"
+      "Miscellaneous Symbols and Pictographs"
+      "Transport and Map Symbols"))
+  (unicode-fonts-setup))
+
 ;; Theme stuff
 (use-package doom-themes
   :config
@@ -65,6 +110,39 @@
   ;;(doom-themes-org-config))
   )
 
+;; Modeline
+
+;; You must run (all-the-icons-install-fonts) one time after
+;; installing this package!
+
+(use-package minions
+  :hook (doom-modeline-mode . minions-mode))
+
+(use-package doom-modeline
+  ;;:after eshell     ;; Make sure it gets hooked after eshell
+  :hook (after-init . doom-modeline-init)
+  :custom-face
+  (mode-line ((t (:height 0.85))))
+  (mode-line-inactive ((t (:height 0.85))))
+  :custom
+  (doom-modeline-height 15)
+  (doom-modeline-bar-width 6)
+  (doom-modeline-lsp t)
+  (doom-modeline-github nil)
+  (doom-modeline-mu4e nil)
+  (doom-modeline-irc nil)
+  (doom-modeline-minor-modes t)
+  (doom-modeline-persp-name nil)
+  (doom-modeline-buffer-file-name-style 'truncate-except-project)
+  (doom-modeline-major-mode-icon nil))
+
+;; Fix terminal colors
+(require 'ansi-color)
+(defun jl/ansi-colorize-buffer ()
+  (let ((buffer-read-only nil))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+(add-hook 'compilation-filter-hook 'jl/ansi-colorize-buffer)
+
 (use-package general
   :config
   (general-evil-setup t)
@@ -79,11 +157,19 @@
   (general-create-definer jl/ctrl-c-keys
     :prefix "C-c"))
 
+;; Save when changing files
+(use-package super-save
+  :defer 1
+  :diminish super-save-mode
+  :config
+  (super-save-mode +1)
+  (setq super-save-auto-save-when-idle t))
+
 ;; General dev
 (use-package lsp-mode
   :straight t
   :commands lsp
-  :hook ((typescript-mode go-mode) . lsp)
+  :hook ((typescript-mode j2s-mode web-mode go-mode) . lsp)
   :bind (:map lsp-mode-map
          ("TAB" . completion-at-point))
   :custom (lsp-headerline-breadcrumb-enable nil))
@@ -153,7 +239,7 @@
   :config
   (setq typescript-indent-level 2))
 
-(defun dw/set-js-indentation ()
+(defun jl/set-js-indentation ()
   (setq js-indent-level 2)
   (setq evil-shift-width js-indent-level)
   (setq-default tab-width 2))
@@ -168,8 +254,8 @@
   (setq js2-mode-show-strict-warnings nil)
 
   ;; Set up proper indentation in JavaScript and JSON files
-  (add-hook 'js2-mode-hook #'dw/set-js-indentation)
-  (add-hook 'json-mode-hook #'dw/set-js-indentation))
+  (add-hook 'js2-mode-hook #'jl/set-js-indentation)
+  (add-hook 'json-mode-hook #'jl/set-js-indentation))
 
 (use-package apheleia
   :config
@@ -202,8 +288,6 @@
 (menu-bar-mode -1)          ; Disable the menu bar
 
 
-;; Font size 16
-(set-face-attribute 'default nil :height 160)
 
 ;; Line numbers
 (when (version<= "26.0.50" emacs-version )
@@ -411,3 +495,13 @@ folder, otherwise delete a word"
   :defer 1
   :config
   (default-text-scale-mode))
+
+;; Elfeed
+(use-package elfeed
+  :commands elfeed
+  :config)
+(custom-set-variables
+ '(elfeed-feeds
+   '("https://www.paritybit.ca/feeds/sitewide-feed.xml" "https://jcs.org/rss" "https://drewdevault.com/blog/index.xml" "https://protesilaos.com/news.xml" "https://protesilaos.com/books.xml" "https://protesilaos.com/politics.xml" "https://protesilaos.com/codelog.xml" "http://blog.samaltman.com/posts.atom" "http://techblog.netflix.com/feeds/posts/default" "http://devblog.songkick.com/feed/" "https://stripe.com/blog/feed.rss" "https://medium.com/feed/airbnb-engineering" "https://zachholman.com/atom.xml" "https://www.brandonsanderson.com/feed/")))
+(custom-set-faces
+ '(vertico-current ((t (:background "#3a3f5a")))))
