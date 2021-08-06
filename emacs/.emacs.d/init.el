@@ -299,6 +299,29 @@
   (setq prettier-js-show-errors nil))
 
 
+;; Emacs lisp stuff
+(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . helpful-function)
+  ([remap describe-symbol] . helpful-symbol)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-key] . helpful-key))
+
+(jl/leader-key-def
+  "e"   '(:ignore t :which-key "eval")
+  "eb"  '(eval-buffer :which-key "eval buffer"))
+
+(jl/leader-key-def
+  :keymaps '(visual)
+  "er" '(eval-region :which-key "eval region"))
+
+
 ;; Docker stuff
 (use-package docker
   :straight t
@@ -669,7 +692,7 @@ folder, otherwise delete a word"
       ("jj" "Journal" entry
            (file+olp+datetree "~/Notes/Journal.org")
            "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-           ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+           ;; ,(jl/read-file-as-string "~/Notes/Templates/Daily.org")
            :clock-in :clock-resume
            :empty-lines 1)
       ("jm" "Meeting" entry
