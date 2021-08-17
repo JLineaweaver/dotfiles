@@ -36,7 +36,7 @@
 (straight-use-package 'use-package)
 
 ;; Load the helper package for commands like `straight-x-clean-unused-repos'
-(require 'straight-x)
+;;(require 'straight-x)
 
 ;; Mac Specific stuff
 ;; Dired change for mac & exec path from shell
@@ -129,8 +129,8 @@
   (doom-modeline-bar-width 6)
   (doom-modeline-lsp t)
   (doom-modeline-github nil)
-  (doom-modeline-mu4e nil)
-  (doom-modeline-irc nil)
+  ;;(doom-modeline-mu4e nil)
+  ;;(doom-modeline-irc nil)
   (doom-modeline-minor-modes t)
   (doom-modeline-persp-name nil)
   (doom-modeline-buffer-file-name-style 'truncate-except-project)
@@ -186,8 +186,7 @@
   :straight t
   :commands lsp
   :hook ((typescript-mode j2s-mode web-mode go-mode) . lsp)
-  :bind (:map lsp-mode-map
-         ("TAB" . completion-at-point))
+  :config (lsp-enable-which-key-integration t)
   :custom (lsp-headerline-breadcrumb-enable nil))
 (with-eval-after-load 'lsp-mode
   (add-to-list 'lsp-file-watch-ignored-directories "/vendor/"))
@@ -214,7 +213,19 @@
   (lsp-ui-doc-show))
 
 (use-package company
-     :straight t)
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
 (use-package flycheck
      :straight t)
 
@@ -558,7 +569,8 @@ folder, otherwise delete a word"
   :config)
 (custom-set-variables
  '(elfeed-feeds
-   '("https://www.paritybit.ca/feeds/sitewide-feed.xml" "https://jcs.org/rss" "https://drewdevault.com/blog/index.xml" "https://protesilaos.com/news.xml" "https://protesilaos.com/books.xml" "https://protesilaos.com/politics.xml" "https://protesilaos.com/codelog.xml" "http://blog.samaltman.com/posts.atom" "http://techblog.netflix.com/feeds/posts/default" "http://devblog.songkick.com/feed/" "https://stripe.com/blog/feed.rss" "https://medium.com/feed/airbnb-engineering" "https://zachholman.com/atom.xml" "https://www.brandonsanderson.com/feed/" "https://d12frosted.io/atom.xml" "https://matt-rickard.com/rss/")))
+   '("https://www.paritybit.ca/feeds/sitewide-feed.xml" "https://jcs.org/rss" "https://drewdevault.com/blog/index.xml" "https://protesilaos.com/news.xml" "https://protesilaos.com/books.xml" "https://protesilaos.com/politics.xml" "https://protesilaos.com/codelog.xml" "http://blog.samaltman.com/posts.atom" "http://techblog.netflix.com/feeds/posts/default" "http://devblog.songkick.com/feed/" "https://stripe.com/blog/feed.rss" "https://medium.com/feed/airbnb-engineering" "https://zachholman.com/atom.xml" "https://www.brandonsanderson.com/feed/" "https://d12frosted.io/atom.xml" "https://matt-rickard.com/rss/" "https://mph.puddingbowl.org/feed.xml" "https://github.blog/feed/")))
+
 (custom-set-faces
  '(vertico-current ((t (:background "#3a3f5a")))))
 
@@ -710,9 +722,15 @@ folder, otherwise delete a word"
        "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
   )
 
+(use-package org-bullets
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
 (defun jl/search-org-files ()
   (interactive)
-  (counsel-rg "" "~/Notes" nil "Search Notes: "))
+  (consult-ripgrep "" "~/Notes" nil "Search Notes: "))
+  ;;(counsel-rg "" "~/Notes" nil "Search Notes: "))
 
 (use-package evil-org
   :after org
@@ -731,10 +749,12 @@ folder, otherwise delete a word"
 
   "on"  '(org-toggle-narrow-to-subtree :which-key "toggle narrow")
 
-  "os"  '(jl/counsel-rg-org-files :which-key "search notes")
+  ;;"os"  '(jl/counsel-rg-org-files :which-key "search notes")
+  "os"  '(jl/search-org-files :which-key "search notes")
 
   "oa"  '(org-agenda :which-key "status")
   "ot"  '(org-todo-list :which-key "todos")
   "oc"  '(org-capture t :which-key "capture")
   "ox"  '(org-export-dispatch t :which-key "export"))
+
 
