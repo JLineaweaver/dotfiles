@@ -17,9 +17,7 @@ function M.buf_keymap(buf, mode, lhs, rhs, opts)
     }))
 end
 
-lsp.gopls.setup{
-  root_dir = lsp.util.root_pattern('.git');
-}
+
 
 -- local map = function(type, key, value)
 -- 	vim.fn.nvim_buf_set_keymap(0,type,key,value,{noremap = true, silent = true});
@@ -42,7 +40,7 @@ local on_attach_common = function(client)
 	keymap('n','<leader>gW','<cmd>lua vim.lsp.buf.workspace_symbol()<CR>')
 
 	-- ACTION mappings
-	keymap('n','<leader>ah',  '<cmd>lua vim.lsp.buf.hover()<CR>')
+	keymap('n','gh',  '<cmd>lua vim.lsp.buf.hover()<CR>')
 	keymap('n','<leader>af', '<cmd>lua vim.lsp.buf.code_action()<CR>')
 	keymap('n','<leader>ee', '<cmd>lua vim.lsp.util.show_line_diagnostics()<CR>')
 	keymap('n','<leader>rn',  '<cmd>lua vim.lsp.buf.rename()<CR>')
@@ -52,9 +50,7 @@ local on_attach_common = function(client)
 	keymap('n','<leader>ai',  '<cmd>lua vim.lsp.buf.incoming_calls()<CR>')
 	keymap('n','<leader>ao',  '<cmd>lua vim.lsp.buf.outgoing_calls()<CR>')
 
-	-- if diagnostic plugin is installed
-	--keymap('n','<leader>ep','<cmd>PrevDiagnosticCycle<CR>')
-	--keymap('n','<leader>en','<cmd>NextDiagnosticCycle<CR>')
+    -- Diagnostics
 	keymap('n','<leader>ep','<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
 	keymap('n','<leader>en','<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
 end
@@ -64,36 +60,27 @@ local custom_attach = function(client)
 	keymap('n','<leader>i', '<cmd>lua vim.lsp.buf.code_action({ source = { organizeImports = true } })<CR>')
 end
 
-require'lspconfig'.gopls.setup{on_attach=custom_attach}
+lsp.gopls.setup{
+    on_attach=custom_attach,
+    root_dir = lsp.util.root_pattern('.git');
+}
+--lspconfig.pyls.setup{on_attach=custom_attach}
+lsp.tsserver.setup{on_attach=custom_attach}
+lsp.rust_analyzer.setup{on_attach=custom_attach}
 
-local strategy = { 'exact', 'substring', 'fuzzy' }
-vim.g.completion_matching_strategy_list = strategy
-vim.g.diagnostic_enable_virtual_text = 1
-vim.g.space_before_virtual_text = 5
+-- Diagnostic settings
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+  virtual_text = true,
+  signs = true,
+  underline = true,
+})
 
 -- commented options are defaults
-require('lspkind').init({
-    -- with_text = true,
-    -- symbol_map = {
-    --   Text = '',
-    --   Method = 'ƒ',
-    --   Function = '',
-    --   Constructor = '',
-    --   Variable = '',
-    --   Class = '',
-    --   Interface = 'ﰮ',
-    --   Module = '',
-    --   Property = '',
-    --   Unit = '',
-    --   Value = '',
-    --   Enum = '了',
-    --   Keyword = '',
-    --   Snippet = '﬌',
-    --   Color = '',
-    --   File = '',
-    --   Folder = '',
-    --   EnumMember = '',
-    --   Constant = '',
-    --   Struct = ''
-    -- },
-})
+require('lspkind').init({})
+
+require("trouble").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+}
+

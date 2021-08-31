@@ -4,12 +4,12 @@
 call plug#begin('~/local/share/nvim/site/plugged')
 
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'fatih/vim-go', { 'do': ':silent :GoUpdateBinaries' }
+"Plug 'fatih/vim-go', { 'do': ':silent :GoUpdateBinaries' }
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-dispatch'
+"Plug 'tpope/vim-dispatch'
 Plug 'hashivim/vim-terraform'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --no-bash' }
 Plug 'junegunn/fzf.vim'
@@ -26,7 +26,7 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
-Plug 'tjdevries/lsp_extensions.nvim'
+"Plug 'tjdevries/lsp_extensions.nvim'
 Plug 'onsails/lspkind-nvim'
 
 Plug 'leafgarland/typescript-vim'
@@ -35,11 +35,11 @@ Plug 'prettier/vim-prettier', {
   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 Plug 'godlygeek/tabular'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
-Plug 'jceb/vim-orgmode'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-ruby/vim-ruby'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  
+Plug 'folke/trouble.nvim', { 'branch': 'main'}
 
 " Initialize plugin system
 call plug#end()
