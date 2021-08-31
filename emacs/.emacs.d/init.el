@@ -1,4 +1,4 @@
-;; Fire up the packages
+
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
@@ -185,7 +185,7 @@
 (use-package lsp-mode
   :straight t
   :commands lsp
-  :hook ((typescript-mode j2s-mode web-mode go-mode) . lsp)
+  :hook ((typescript-mode j2s-mode web-mode go-mode terraform-mode) . lsp)
   :config (lsp-enable-which-key-integration t)
   :custom (lsp-headerline-breadcrumb-enable nil))
 (with-eval-after-load 'lsp-mode
@@ -271,6 +271,12 @@
   :straight t
   :hook (go-mode . lsp-deferred))
 (setenv "PATH" (concat (getenv "PATH") "~/go/bin"))
+
+;; Terraform
+(use-package terraform-mode
+  :straight t
+  :init
+  (setq terraform-format-on-save-mode t))
 
 ;; Typescript stuff
 (use-package nvm
@@ -395,6 +401,7 @@
                   circe-chat-mode
                   circe-query-mode
                   sauron-mode
+		  kubernetes-mode
                   term-mode))
   (add-to-list 'evil-emacs-state-modes mode)))
 ;; unbind C-u
@@ -461,6 +468,7 @@
   (setq projectile-switch-project-action #'jl/switch-project-action))
 
 (jl/leader-key-def
+    "p"   '(:ignore t :which-key "projectile")
     "pf"  'projectile-find-file
     "ps"  'projectile-switch-project
     "pF"  'consult-ripgrep
@@ -550,10 +558,13 @@ folder, otherwise delete a word"
 
 ;; Kube stuff
 (use-package kubernetes
+  :straight t
+  :after evil
   :commands (kubernetes-overview))
 
 ;; If you want to pull in the Evil compatibility package.
 (use-package kubernetes-evil
+  :straight t
   :after kubernetes)
 
 ;; Scale
@@ -569,7 +580,7 @@ folder, otherwise delete a word"
   :config)
 (custom-set-variables
  '(elfeed-feeds
-   '("https://www.paritybit.ca/feeds/sitewide-feed.xml" "https://jcs.org/rss" "https://drewdevault.com/blog/index.xml" "https://protesilaos.com/news.xml" "https://protesilaos.com/books.xml" "https://protesilaos.com/politics.xml" "https://protesilaos.com/codelog.xml" "http://blog.samaltman.com/posts.atom" "http://techblog.netflix.com/feeds/posts/default" "http://devblog.songkick.com/feed/" "https://stripe.com/blog/feed.rss" "https://medium.com/feed/airbnb-engineering" "https://zachholman.com/atom.xml" "https://www.brandonsanderson.com/feed/" "https://d12frosted.io/atom.xml" "https://matt-rickard.com/rss/" "https://mph.puddingbowl.org/feed.xml" "https://github.blog/feed/")))
+   '("https://www.paritybit.ca/feeds/sitewide-feed.xml" "https://jcs.org/rss" "https://drewdevault.com/blog/index.xml" "https://protesilaos.com/news.xml" "https://protesilaos.com/books.xml" "https://protesilaos.com/politics.xml" "https://protesilaos.com/codelog.xml" "http://blog.samaltman.com/posts.atom" "http://techblog.netflix.com/feeds/posts/default" "http://devblog.songkick.com/feed/" "https://stripe.com/blog/feed.rss" "https://medium.com/feed/airbnb-engineering" "https://zachholman.com/atom.xml" "https://www.brandonsanderson.com/feed/" "https://d12frosted.io/atom.xml" "https://matt-rickard.com/rss/" "https://mph.puddingbowl.org/feed.xml" "https://github.blog/feed/" "https://fivethirtyeight.com/economics/feed/" "https://blog.apaonline.org/feed/" "https://crookedtimber.org/feed/" "http://feeds.feedburner.com/blogspot/XqoV" "https://gregmankiw.blogspot.com/feeds/posts/default" "https://blog.supplysideliberal.com/post?format=rss" "https://blog.discord.com/feed" "https://stevenvanbael.com/feed.xml")))
 
 (custom-set-faces
  '(vertico-current ((t (:background "#3a3f5a")))))
@@ -605,9 +616,9 @@ folder, otherwise delete a word"
   (setq org-log-into-drawer t)
 
   (setq org-agenda-files
-        '("~/Notes/Tasks.org"
-	  "~/Notes/Journal.org"
-	  "~/Notes/Metrics.org"))
+        '("~/Notes"
+	  "~/Notes/Roam"
+	  "~/Notes/Roam/daily"))
 
   (require 'org-habit)
   (add-to-list 'org-modules 'org-habit)
@@ -728,9 +739,13 @@ folder, otherwise delete a word"
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 (defun jl/search-org-files ()
-  (interactive)
-  (consult-ripgrep "" "~/Notes" nil "Search Notes: "))
+  ;;(interactive)
+  ;;(consult-ripgrep "" "~/Notes" nil "Search Notes: "))
   ;;(counsel-rg "" "~/Notes" nil "Search Notes: "))
+  "Search org-roam directory using consult-ripgrep. With live-preview."
+  (interactive)
+  (let ((consult-ripgrep-command "rg --null --ignore-case --type org --line-buffered --color=always --max-columns=500 --no-heading --line-number . -e ARG OPTS"))
+    (consult-ripgrep "~/Notes")))
 
 (use-package evil-org
   :after org
@@ -741,20 +756,85 @@ folder, otherwise delete a word"
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
+(use-package org-roam
+  :straight t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/Notes/Roam/")
+  (org-roam-completion-everywhere t)
+  (org-roam-dailies-capture-templates
+    '(("d" "default" entry "* %<%I:%M %p>: %?"
+       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         :map org-mode-map
+         ("C-M-i" . completion-at-point)
+         :map org-roam-dailies-map
+         ("Y" . org-roam-dailies-capture-yesterday)
+         ("T" . org-roam-dailies-capture-tomorrow))
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
+  :config
+  (require 'org-roam-dailies) ;; Ensure the keymap is available
+  (org-roam-db-autosync-mode))
+
 (jl/leader-key-def
   "o"   '(:ignore t :which-key "org mode")
 
-  "oi"  '(:ignore t :which-key "insert")
+  ;;"oi"  '(:ignore t :which-key "insert")
   "oil" '(org-insert-link :which-key "insert link")
-
   "on"  '(org-toggle-narrow-to-subtree :which-key "toggle narrow")
-
-  ;;"os"  '(jl/counsel-rg-org-files :which-key "search notes")
   "os"  '(jl/search-org-files :which-key "search notes")
-
   "oa"  '(org-agenda :which-key "status")
   "ot"  '(org-todo-list :which-key "todos")
   "oc"  '(org-capture t :which-key "capture")
-  "ox"  '(org-export-dispatch t :which-key "export"))
+  "ox"  '(org-export-dispatch t :which-key "export")
 
 
+  "ol"  '(org-roam-buffer-toggle t :which-key "buffer")
+  "of"  '(org-roam-node-find t :which-key "find")
+  "oi"  '(org-roam-node-insert t :which-key "insert node")
+  "od"  '(org-roam-dailies-map t :which-key "dailies")
+
+  )
+
+;; Tree
+(use-package treemacs
+  :ensure t
+  :config
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (treemacs-fringe-indicator-mode 'always)
+  )
+
+(use-package treemacs-projectile
+  :after (treemacs projectile)
+  :ensure t)
+
+(use-package treemacs-icons-dired
+  :after (treemacs dired)
+  :ensure t
+  :config (treemacs-icons-dired-mode))
+
+(use-package treemacs-magit
+  :after (treemacs magit)
+  :ensure t)
+
+(use-package treemacs-perspective ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  :after (treemacs perspective) ;;or perspective vs. persp-mode
+  :ensure t
+  :config (treemacs-set-scope-type 'Perspectives))
+
+(jl/leader-key-def
+    "n"  'treemacs)
+
+
+;; Folding
+(use-package origami
+  :config
+  (global-origami-mode))
+
+(use-package lsp-origami
+  :hook ((lsp-after-open . lsp-origami-mode)))
