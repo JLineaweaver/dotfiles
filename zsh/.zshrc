@@ -40,6 +40,7 @@ alias jl="cd ~/go/src/github.com/jlineaweaver"
 alias sg="cd ~/go/src/github.com/sendgrid"
 alias sgo="cd ~/go/src/github.com/sendgrid-ops"
 alias sgd="cd ~/go/src/github.com/sendgrid-dev"
+alias seg="cd ~/go/src/github.com/segmentio"
 alias clr="clear"
 
 #docker
