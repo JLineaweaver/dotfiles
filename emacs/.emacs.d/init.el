@@ -129,7 +129,7 @@
   (doom-modeline-bar-width 6)
   (doom-modeline-lsp t)
   (doom-modeline-github nil)
-  ;;(doom-modeline-mu4e nil)
+  (doom-modeline-mu4e nil)
   ;;(doom-modeline-irc nil)
   (doom-modeline-minor-modes t)
   (doom-modeline-persp-name nil)
@@ -579,10 +579,20 @@ folder, otherwise delete a word"
   :commands elfeed
   :config)
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(elfeed-feeds
-   '("https://www.paritybit.ca/feeds/sitewide-feed.xml" "https://jcs.org/rss" "https://drewdevault.com/blog/index.xml" "https://protesilaos.com/news.xml" "https://protesilaos.com/books.xml" "https://protesilaos.com/politics.xml" "https://protesilaos.com/codelog.xml" "http://blog.samaltman.com/posts.atom" "http://techblog.netflix.com/feeds/posts/default" "http://devblog.songkick.com/feed/" "https://stripe.com/blog/feed.rss" "https://medium.com/feed/airbnb-engineering" "https://zachholman.com/atom.xml" "https://www.brandonsanderson.com/feed/" "https://d12frosted.io/atom.xml" "https://matt-rickard.com/rss/" "https://mph.puddingbowl.org/feed.xml" "https://github.blog/feed/" "https://fivethirtyeight.com/economics/feed/" "https://blog.apaonline.org/feed/" "https://crookedtimber.org/feed/" "http://feeds.feedburner.com/blogspot/XqoV" "https://gregmankiw.blogspot.com/feeds/posts/default" "https://blog.supplysideliberal.com/post?format=rss" "https://blog.discord.com/feed" "https://stevenvanbael.com/feed.xml")))
+   '("https://www.paritybit.ca/feeds/sitewide-feed.xml" "https://jcs.org/rss" "https://drewdevault.com/blog/index.xml" "https://protesilaos.com/news.xml" "https://protesilaos.com/books.xml" "https://protesilaos.com/politics.xml" "https://protesilaos.com/codelog.xml" "http://blog.samaltman.com/posts.atom" "http://techblog.netflix.com/feeds/posts/default" "http://devblog.songkick.com/feed/" "https://stripe.com/blog/feed.rss" "https://medium.com/feed/airbnb-engineering" "https://zachholman.com/atom.xml" "https://www.brandonsanderson.com/feed/" "https://d12frosted.io/atom.xml" "https://matt-rickard.com/rss/" "https://mph.puddingbowl.org/feed.xml" "https://github.blog/feed/" "https://fivethirtyeight.com/economics/feed/" "https://blog.apaonline.org/feed/" "https://crookedtimber.org/feed/" "http://feeds.feedburner.com/blogspot/XqoV" "https://gregmankiw.blogspot.com/feeds/posts/default" "https://blog.supplysideliberal.com/post?format=rss" "https://blog.discord.com/feed" "https://stevenvanbael.com/feed.xml"))
 
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(mode-line ((t (:height 0.85))))
+ '(mode-line-inactive ((t (:height 0.85))))
  '(vertico-current ((t (:background "#3a3f5a")))))
 
 ;; Org
@@ -598,6 +608,7 @@ folder, otherwise delete a word"
 
 (use-package org
   :defer t
+  :init (setq org-return-follows-link t)
   :hook (org-mode . jl/org-mode-setup)
   :config
   (setq org-ellipsis " ▾"
@@ -716,17 +727,19 @@ folder, otherwise delete a word"
            (file+olp+datetree "~/Notes/Journal.org")
            "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
            ;; ,(jl/read-file-as-string "~/Notes/Templates/Daily.org")
-           :clock-in :clock-resume
+           ;;:clock-in :clock-resume
            :empty-lines 1)
       ("jm" "Meeting" entry
            (file+olp+datetree "~/Notes/Journal.org")
            "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-           :clock-in :clock-resume
+           ;;:clock-in :clock-resume
            :empty-lines 1)
 
       ("w" "Workflows")
       ("we" "Checking Email" entry (file+olp+datetree "~/Notes/Journal.org")
-           "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
+       "* Checking Email :email:\n\n%?"
+       ;;:clock-in :clock-resume
+       :empty-lines 1)
 
       ("m" "Metrics Capture")
       ("mw" "Weight" table-line (file+headline "~/Notes/Metrics.org" "Weight")
@@ -739,9 +752,6 @@ folder, otherwise delete a word"
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 (defun jl/search-org-files ()
-  ;;(interactive)
-  ;;(consult-ripgrep "" "~/Notes" nil "Search Notes: "))
-  ;;(counsel-rg "" "~/Notes" nil "Search Notes: "))
   "Search org-roam directory using consult-ripgrep. With live-preview."
   (interactive)
   (let ((consult-ripgrep-command "rg --null --ignore-case --type org --line-buffered --color=always --max-columns=500 --no-heading --line-number . -e ARG OPTS"))
@@ -757,7 +767,7 @@ folder, otherwise delete a word"
   (evil-org-agenda-set-keys))
 
 (use-package org-roam
-  :straight t
+  :after org
   :init
   (setq org-roam-v2-ack t)
   :custom
@@ -783,8 +793,11 @@ folder, otherwise delete a word"
 (jl/leader-key-def
   "o"   '(:ignore t :which-key "org mode")
 
-  ;;"oi"  '(:ignore t :which-key "insert")
+  "oi"  '(:ignore t :which-key "insert")
+  "oin"  '(org-roam-node-insert t :which-key "insert node")
   "oil" '(org-insert-link :which-key "insert link")
+  "ois" '(org-set-tags-command :which-key "insert tag")
+  "oit" '(org-todo :which-key "insert todo")
   "on"  '(org-toggle-narrow-to-subtree :which-key "toggle narrow")
   "os"  '(jl/search-org-files :which-key "search notes")
   "oa"  '(org-agenda :which-key "status")
@@ -792,10 +805,9 @@ folder, otherwise delete a word"
   "oc"  '(org-capture t :which-key "capture")
   "ox"  '(org-export-dispatch t :which-key "export")
 
-
+  "oj"  '(org-open-at-point t :which-key "jump")
   "ol"  '(org-roam-buffer-toggle t :which-key "buffer")
   "of"  '(org-roam-node-find t :which-key "find")
-  "oi"  '(org-roam-node-insert t :which-key "insert node")
   "od"  '(org-roam-dailies-map t :which-key "dailies")
 
   )
@@ -838,3 +850,33 @@ folder, otherwise delete a word"
 
 (use-package lsp-origami
   :hook ((lsp-after-open . lsp-origami-mode)))
+
+;; Email
+(use-package mu4e
+  :straight nil
+  ;;:load-path "/usr/share/emacs/site-lisp/mu4e/"
+  ;;:defer 20 ; Wait until 20 seconds after startup
+  :config
+
+  ;; This is set to 't' to avoid mail syncing issues when using mbsync
+  (setq mu4e-change-filenames-when-moving t)
+
+  ;; Refresh mail using isync every 10 minutes
+  (setq mu4e-update-interval (* 10 60))
+  (setq mu4e-get-mail-command "mbsync -a")
+  (setq mu4e-maildir "~/Mail")
+
+  (setq message-send-mail-function 'smtpmail-send-it)
+
+  (setq mu4e-drafts-folder "/[Gmail]/Drafts")
+  (setq mu4e-sent-folder   "/[Gmail]/Sent Mail")
+  (setq mu4e-refile-folder "/[Gmail]/All Mail")
+  (setq mu4e-trash-folder  "/[Gmail]/Trash")
+
+  (setq mu4e-maildir-shortcuts
+      '(("/Inbox"             . ?i)
+        ("/[Gmail]/Sent Mail" . ?s)
+        ("/[Gmail]/Trash"     . ?t)
+        ("/[Gmail]/Drafts"    . ?d)
+        ("/Receipts"          . ?r)
+        ("/[Gmail]/All Mail"  . ?a))))
