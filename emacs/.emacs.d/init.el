@@ -577,23 +577,9 @@ folder, otherwise delete a word"
 ;; Elfeed
 (use-package elfeed
   :commands elfeed
-  :config)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(elfeed-feeds
-   '("https://www.paritybit.ca/feeds/sitewide-feed.xml" "https://jcs.org/rss" "https://drewdevault.com/blog/index.xml" "https://protesilaos.com/news.xml" "https://protesilaos.com/books.xml" "https://protesilaos.com/politics.xml" "https://protesilaos.com/codelog.xml" "http://blog.samaltman.com/posts.atom" "http://techblog.netflix.com/feeds/posts/default" "http://devblog.songkick.com/feed/" "https://stripe.com/blog/feed.rss" "https://medium.com/feed/airbnb-engineering" "https://zachholman.com/atom.xml" "https://www.brandonsanderson.com/feed/" "https://d12frosted.io/atom.xml" "https://matt-rickard.com/rss/" "https://mph.puddingbowl.org/feed.xml" "https://github.blog/feed/" "https://fivethirtyeight.com/economics/feed/" "https://blog.apaonline.org/feed/" "https://crookedtimber.org/feed/" "http://feeds.feedburner.com/blogspot/XqoV" "https://gregmankiw.blogspot.com/feeds/posts/default" "https://blog.supplysideliberal.com/post?format=rss" "https://blog.discord.com/feed" "https://stevenvanbael.com/feed.xml"))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mode-line ((t (:height 0.85))))
- '(mode-line-inactive ((t (:height 0.85))))
- '(vertico-current ((t (:background "#3a3f5a")))))
+  :config
+ (setq elfeed-feeds
+   '("https://www.paritybit.ca/feeds/sitewide-feed.xml" "https://jcs.org/rss" "https://drewdevault.com/blog/index.xml" "https://protesilaos.com/news.xml" "https://protesilaos.com/books.xml" "https://protesilaos.com/politics.xml" "https://protesilaos.com/codelog.xml" "http://blog.samaltman.com/posts.atom" "http://techblog.netflix.com/feeds/posts/default" "http://devblog.songkick.com/feed/" "https://stripe.com/blog/feed.rss" "https://medium.com/feed/airbnb-engineering" "https://zachholman.com/atom.xml" "https://www.brandonsanderson.com/feed/" "https://d12frosted.io/atom.xml" "https://matt-rickard.com/rss/" "https://mph.puddingbowl.org/feed.xml" "https://github.blog/feed/" "https://fivethirtyeight.com/economics/feed/" "https://blog.apaonline.org/feed/" "https://crookedtimber.org/feed/" "http://feeds.feedburner.com/blogspot/XqoV" "https://gregmankiw.blogspot.com/feeds/posts/default" "https://blog.supplysideliberal.com/post?format=rss" "https://blog.discord.com/feed" "https://stevenvanbael.com/feed.xml")))
 
 ;; Org
 ;; Turn on indentation and auto-fill mode for Org files
@@ -866,12 +852,28 @@ folder, otherwise delete a word"
   (setq mu4e-get-mail-command "mbsync -a")
   (setq mu4e-maildir "~/Mail")
 
-  (setq message-send-mail-function 'smtpmail-send-it)
+  ;; configuration for sending mail
+  (setq message-send-mail-function 'smtpmail-send-it
+     smtpmail-stream-type 'starttls
+     smtpmail-default-smtp-server "smtp.gmail.com"
+     smtpmail-smtp-server "smtp.gmail.com"
+     smtpmail-smtp-service 587)
 
-  (setq mu4e-drafts-folder "/[Gmail]/Drafts")
-  (setq mu4e-sent-folder   "/[Gmail]/Sent Mail")
-  (setq mu4e-refile-folder "/[Gmail]/All Mail")
-  (setq mu4e-trash-folder  "/[Gmail]/Trash")
+  (setq mu4e-contexts
+        (list
+         ;; Work account
+         (make-mu4e-context
+          :name "Personal"
+          :match-func
+            (lambda (msg)
+              (when msg
+                (string-prefix-p "" (mu4e-message-field msg :maildir))))
+          :vars '((user-mail-address . "JLineaweaver@gmail.com")
+                  (user-full-name    . "Joshua Lineaweaver")
+                  (mu4e-drafts-folder  . "/[Gmail]/Drafts")
+                  (mu4e-sent-folder  . "/[Gmail]/Sent Mail")
+                  (mu4e-refile-folder  . "/[Gmail]/All Mail")
+                  (mu4e-trash-folder  . "/[Gmail]/Trash")))))
 
   (setq mu4e-maildir-shortcuts
       '(("/Inbox"             . ?i)
