@@ -74,9 +74,9 @@ nnoremap <silent> <leader>/ :noh<CR>
 "nerdtree
 nnoremap <C-n> :NvimTreeToggle<CR>
 "let g:nvim_tree_auto_open = 1 
-let g:nvim_tree_auto_close = 1
-let g:nvim_tree_quit_on_open = 1
-let g:nvim_tree_follow = 1
+"let g:nvim_tree_auto_close = 1
+"let g:nvim_tree_quit_on_open = 1
+"let g:nvim_tree_follow = 1
 
 "Change tabs to spaces
 set expandtab
@@ -144,6 +144,7 @@ let g:terraform_fmt_on_save=1
 "source ~/.config/nvim/lsp.vim
 lua require("lsp")
 lua require("treesitter-nvim")
+lua require("tree")
 " Use <Tab> and <S-Tab> to navigate through popup menu
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
