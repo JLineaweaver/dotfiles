@@ -14,7 +14,7 @@ plugins=(
     brew 
     github 
     terraform
-    osx 
+    macos 
     z)
 
 source $ZSH/oh-my-zsh.sh
@@ -48,6 +48,9 @@ function dockerclean() {
         docker rmi $(docker images -f "dangling=true" -q)
         docker kill $(docker ps -q); docker rm -vf $(docker ps -aq)
         docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes
+}
+function dbash () {
+    docker exec -ti `docker ps | grep $1 | awk '{ print $1 }'` bash
 }
 alias dockerhelp="echo 'docker-compose up \ndocker ps \ndocker exec -it \$DockerIdOrName /bin/bash'"
 alias dc="docker-compose"
