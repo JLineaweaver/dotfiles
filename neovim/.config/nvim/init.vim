@@ -90,50 +90,6 @@ autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 autocmd FileType javascript setlocal ts=4 sts=4 sw=4
 
-"go stuff
-au FileType go set noexpandtab
-au FileType go set shiftwidth=4
-au FileType go set softtabstop=4
-au FileType go set tabstop=4
-"let g:go_highlight_functions = 1
-"let g:go_highlight_methods = 1
-"let g:go_highlight_fields = 1
-"let g:go_highlight_types = 1
-"let g:go_highlight_operators = 1
-"let g:go_highlight_build_constraints = 1
-"let g:go_def_mode = "gopls"
-"let g:go_info_mode = "gopls"
-"let g:go_fmt_command = "goimports"
-"let g:go_metalinter_command = "golangci-lint"
-"let g:go_highlight_string_spellcheck = 1
-"let g:go_highlight_format_strings = 1
-"let g:go_auto_type_info = 1
-"au FileType go nmap <leader>bb <Plug>(go-build)
-"au FileType go nmap <leader>bt <Plug>(go-test)
-""au FileType go nmap <leader>c <Plug>(go-coverage)
-"au FileType go nmap <leader>be <Plug>(go-iferr)
-"let g:go_metalinter_enabled  = [
-"      \ 'deadcode',
-"      \ 'errcheck',
-"      \ 'goconst',
-"      \ 'gofmt',
-"      \ 'goimports',
-"      \ 'golint',
-"      \ 'gosimple',
-"      \ 'ineffassign',
-"      \ 'interfacer',
-"      \ 'misspell',
-"      \ 'staticcheck',
-"      \ 'unconvert',
-"      \ 'unused',
-"      \ 'varcheck',
-"      \ 'vet',
-"      \ 'vetshadow',
-"\ ]
-"let g:go_metalinter_deadline = "30s"
-"let g:go_code_completion_enabled = 0
-"let g:go_fmt_fail_silently = 1
-
 let g:terraform_align=1
 let g:terraform_fold_sections=1
 let g:terraform_remap_spacebar=1
@@ -143,6 +99,17 @@ let g:terraform_fmt_on_save=1
 " lsp
 "source ~/.config/nvim/lsp.vim
 lua require("lsp")
+
+"go stuff
+au FileType go set noexpandtab
+au FileType go set shiftwidth=4
+au FileType go set softtabstop=4
+au FileType go set tabstop=4
+autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
+autocmd BufWritePre *.go lua goimports(1000)
+"let g:go_fmt_command = "goimports"
+
+
 lua require("treesitter-nvim")
 lua require("tree")
 " Use <Tab> and <S-Tab> to navigate through popup menu
@@ -166,24 +133,6 @@ autocmd FileType gitcommit setlocal spell
 "Remove the go enter shit
 :set shortmess=a
 :set cmdheight=2
-
-" fugitive git bindings
-" nnoremap <leader>ga :Git add %:p<CR>
-" nnoremap <leader>gs :Gstatus<CR>
-" nnoremap <leader>gc :Gcommit -v -q<CR>
-" nnoremap <leader>gt :Gcommit -v -q %:p<CR>
-" nnoremap <leader>gd :Gdiff<CR>
-" nnoremap <leader>ge :Gedit<CR>
-" nnoremap <leader>gr :Gread<CR>
-" nnoremap <leader>gw :Gwrite<CR>
-" nnoremap <leader>gl :Glog<CR>
-" nnoremap <leader>glc :0Glog<CR>
-" nnoremap <leader>gp :Ggrep<Space>
-" nnoremap <leader>gm :Gmove<Space>
-" nnoremap <leader>gb :Git branch<Space>
-" nnoremap <leader>go :Git checkout<Space>
-" nnoremap <leader>gpd :Gpull<cr>
-" nnoremap <leader>gpu :Gpush<cr>
 
 " trouble
 nnoremap <leader> <cmd>TroubleToggle<cr>

@@ -5,6 +5,7 @@ call plug#begin('~/local/share/nvim/site/plugged')
 
 Plug 'christoomey/vim-tmux-navigator'
 "Plug 'fatih/vim-go', { 'do': ':silent :GoUpdateBinaries' }
+"Plug 'darrikonn/vim-gofmt', { 'do': ':GoUpdateBinaries' }
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
@@ -25,9 +26,15 @@ Plug 'kyazdani42/nvim-tree.lua'
 "LSP
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/completion-nvim'
+"Plug 'nvim-lua/completion-nvim'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/nvim-cmp'
 "Plug 'tjdevries/lsp_extensions.nvim'
 Plug 'onsails/lspkind-nvim'
+
+Plug 'L3MON4D3/LuaSnip'
+Plug 'rafamadriz/friendly-snippets'
 
 Plug 'leafgarland/typescript-vim'
 Plug 'prettier/vim-prettier', {
