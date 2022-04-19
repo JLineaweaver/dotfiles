@@ -41,6 +41,7 @@ alias sg="cd ~/go/src/github.com/sendgrid"
 alias sgo="cd ~/go/src/github.com/sendgrid-ops"
 alias sgd="cd ~/go/src/github.com/sendgrid-dev"
 alias seg="cd ~/go/src/github.com/segmentio"
+alias twl="cd ~/go/src/code.hq.twilio.com/twilio"
 alias clr="clear"
 
 #docker
@@ -92,7 +93,8 @@ function master-to-main {
         git branch -u origin/main main
 }
 
-#always run at the end
-rm -f ~/.zcompdump; compinit
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+#always run at the end
+rm -f ~/.zcompdump; compinit
