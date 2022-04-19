@@ -2,48 +2,59 @@ local M = {}
 local lsp = require'lspconfig'
 
 -- Setup nvim-cmp.
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
+local cmp_status_ok, cmp = pcall(require, "cmp")
+if not cmp_status_ok then
+	return
+end
 
-local cmp = require("cmp")
-local source_mapping = {
-	buffer = "[Buffer]",
-	nvim_lsp = "[LSP]",
-	path = "[Path]",
-}
-local lspkind = require("lspkind")
+local snip_status_ok, luasnip = pcall(require, "luasnip")
+if not snip_status_ok then
+    print("ERROR: lua snip couldnt load.")
+	return
+end
 
 cmp.setup({
 	snippet = {
 		expand = function(args)
-			require("luasnip").lsp_expand(args.body)
+			luasnip.lsp_expand(args.body)
 		end,
 	},
-	mapping = {
-		["<C-u>"] = cmp.mapping.scroll_docs(-4),
-		["<C-d>"] = cmp.mapping.scroll_docs(4),
-		["<C-Space>"] = cmp.mapping.complete(),
-	},
-
-	formatting = {
-		format = function(entry, vim_item)
-			vim_item.kind = lspkind.presets.default[vim_item.kind]
-			local menu = source_mapping[entry.source.name]
-			if entry.source.name == "cmp_tabnine" then
-				if entry.completion_item.data ~= nil and entry.completion_item.data.detail ~= nil then
-					menu = entry.completion_item.data.detail .. " " .. menu
-				end
-				vim_item.kind = ""
+    mapping = cmp.mapping.preset.insert({
+		--["<CR>"] = cmp.config.disable,
+		["<C-s>"] = cmp.mapping.confirm({ select = true }),
+		["<C-y>"] = function(fallback)
+			if cmp.visible() then
+				cmp.select_next_item()
+			else
+				fallback()
 			end
-			vim_item.menu = menu
+		end,
+	}),
+	formatting = {
+		fields = { "kind", "abbr", "menu" },
+		format = function(entry, vim_item)
+			-- Kind icons
+            vim_item.kind = mykind
+			vim_item.menu = ({
+				nvim_lua = "[NVIM_API]",
+				nvim_lsp = "[LSP]",
+				luasnip = "[SNIP]",
+				buffer = "[BUF]",
+				path = "[PATH]",
+			})[entry.source.name]
 			return vim_item
 		end,
 	},
-
 	sources = {
+		{ name = "nvim_lua" },
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
 		{ name = "buffer" },
+		{ name = "path" },
+	},
+	experimental = {
+		ghost_text = true,
+		native_menu = false,
 	},
 })
 
@@ -172,22 +183,36 @@ require("trouble").setup {
     -- refer to the configuration section below
 }
 
-local snippets_paths = function()
-	local plugins = { "friendly-snippets" }
-	local paths = {}
-	local path
-	local root_path = vim.env.HOME .. "/.vim/plugged/"
-	for _, plug in ipairs(plugins) do
-		path = root_path .. plug
-		if vim.fn.isdirectory(path) ~= 0 then
-			table.insert(paths, path)
-		end
-	end
-	return paths
-end
-
-require("luasnip.loaders.from_vscode").lazy_load({
-	paths = snippets_paths(),
-	include = nil, -- Load all languages
-	exclude = {},
-})
+local mykind = {
+      Text = "", Method = "m",
+      Function = "",
+      -- Constructor = "",
+      -- Method = "",
+      -- Function = "",
+      Constructor = "",
+      Field = "",
+      Variable = "",
+      -- Variable = "",
+      Class = "",
+      Interface = "",
+      Module = "",
+      -- Module = "",
+      Property = "",
+      Unit = "",
+      Value = "",
+      Enum = "",
+      Keyword = "",
+      -- Keyword = "",
+      Snippet = "",
+      -- Snippet = "",
+      Color = "",
+      File = "",
+      Reference = "",
+      Folder = "",
+      EnumMember = "",
+      Constant = "",
+      Struct = "",
+      Event = "",
+      Operator = "",
+      TypeParameter = "",
+    }
