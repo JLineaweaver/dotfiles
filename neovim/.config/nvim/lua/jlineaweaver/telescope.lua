@@ -7,6 +7,7 @@ require('telescope').setup{
     -- config_key = value,
     prompt_prefix = " ",
     selection_caret = " ",
+    file_ignore_patterns = {"vendor"},
     mappings = {
       i = {
         -- map actions.which_key to <C-h> (default: <C-/>)

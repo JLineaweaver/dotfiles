@@ -18,7 +18,6 @@ o.errorbells = false
 o.termguicolors = true
 o.scrolloff = 8
 o.updatetime = 50
-o.colorcolumn = "80"
 o.signcolumn = "yes"
 
 o.mouse = "nv"
