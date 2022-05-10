@@ -60,6 +60,7 @@ return packer.startup(function(use)
 	use("mattn/webapi-vim")
 	use("JoosepAlviste/nvim-ts-context-commentstring")
 	use("numToStr/Comment.nvim")
+	use("christoomey/vim-tmux-navigator")
 	--use({
 		--"goolord/alpha-nvim",
 		--requires = { "kyazdani42/nvim-web-devicons" },
