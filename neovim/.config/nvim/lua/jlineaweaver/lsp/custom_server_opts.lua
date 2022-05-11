@@ -1,10 +1,3 @@
-local tsserver = {
-	on_attach = function(client, bufnr)
-		require("jlineaweaver.lsp.default_handlers").default_attach(client, bufnr)
-		client.resolved_capabilities.document_formatting = false
-	end,
-}
-
 local wait_ms = 1000
 local OrgImports = function()
 	local params = vim.lsp.util.make_range_params()
@@ -29,6 +22,18 @@ local gopls = {
 			callback = OrgImports,
 		})
 	end,
+}
+
+local tsserver = {
+	on_attach = function(client, bufnr)
+		require("jlineaweaver.lsp.default_handlers").default_attach(client, bufnr)
+		client.resolved_capabilities.document_formatting = false
+	end,
+	init_options = {
+		preferences = {
+			importModuleSpecifierPreference = "relative",
+		},
+	},
 }
 
 local sumneko_lua = {
@@ -57,6 +62,7 @@ local sumneko_lua = {
 		},
 	},
 }
+
 
 -- local pyright = {
 -- 	on_attach = function(default_on_attach)
