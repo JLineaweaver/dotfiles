@@ -14,10 +14,10 @@ general_map("n", "<leader><leader>x", ":lua require'jlineaweaver.globals'.save_a
 local key_maps = {
 	general = {
 		-- Normal Mode Maps
-		{ "n", "<C-h>", "<C-w>h", general_default_opts },
-		{ "n", "<C-j>", "<C-w>j", general_default_opts },
-		{ "n", "<C-k>", "<C-w>k", general_default_opts },
-		{ "n", "<C-l>", "<C-w>l", general_default_opts },
+		-- { "n", "<C-h>", "<C-w>h", general_default_opts },
+		-- { "n", "<C-j>", "<C-w>j", general_default_opts },
+		-- { "n", "<C-k>", "<C-w>k", general_default_opts },
+		-- { "n", "<C-l>", "<C-w>l", general_default_opts },
 
 		{ "n", "<C-S-Up>", ":resize -2<CR>", general_default_opts },
 		{ "n", "<C-S-Down>", ":resize +2<CR>", general_default_opts },
