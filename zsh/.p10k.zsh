@@ -1,0 +1,1 @@
+powerlevel10k/files/.p10k.zsh
