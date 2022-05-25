@@ -1,4 +1,4 @@
-local colorscheme = "gruvbox"
+local colorscheme = "dracula"
 
 -- vim.g.tokyonight_style = "night"
 
