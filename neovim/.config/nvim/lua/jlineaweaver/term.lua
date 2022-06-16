@@ -4,6 +4,10 @@ if not status_ok then
 	return
 end
 
+require("notify").setup({
+  background_colour = "#000000",
+})
+
 toggleterm.setup({
 	size = 20,
 	open_mapping = [[<C-t>]],
