@@ -103,6 +103,9 @@ function master-to-main {
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Add extra stuff to path
+export PATH="$HOME/.local/bin:$PATH"
+
 #always run at the end
 rm -f ~/.zcompdump; compinit
 
