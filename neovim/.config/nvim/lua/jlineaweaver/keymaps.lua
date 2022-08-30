@@ -81,7 +81,7 @@ local key_maps = {
     { "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", lsp_default_opts },
     { "n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", lsp_default_opts },
     { "n", "<leader>fm", "<cmd>lua vim.lsp.buf.format({async = true})<CR>", lsp_default_opts },
-    -- { "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts },
+    --{ "n", "<C-l>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", lsp_default_opts },
   },
 }
 

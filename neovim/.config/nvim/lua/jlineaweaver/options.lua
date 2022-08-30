@@ -19,10 +19,11 @@ o.termguicolors = true
 o.scrolloff = 8
 o.updatetime = 50
 o.signcolumn = "yes"
-
 o.mouse = "nv"
-
 o.showmode = false
+
+vim.cmd([[set ignorecase]])
+vim.cmd([[set smartcase]])
 
 -- Adding - to what defines a contiguous word
 vim.cmd([[set iskeyword+=-]])
@@ -32,23 +33,23 @@ vim.cmd([[set inccommand=split]])
 require("jlineaweaver.format_cmds")
 
 -- Transparency
-vim.cmd([[highlight Normal ctermbg=none guibg=none]])
-vim.cmd([[highlight NormalNC guibg=none]])
-vim.cmd([[highlight NvimTreeNormal guibg=none]])
-vim.cmd([[highlight NvimTreeNormalNC guibg=none]])
-vim.cmd([[highlight SignColumn guibg=none]])
-vim.cmd([[highlight TelescopeNormal guibg=none]])
-vim.cmd([[highlight TelescopeBorder guibg=none]])
+--vim.cmd([[highlight Normal ctermbg=none bg=none]])
+--vim.cmd([[highlight NormalNC bg=none]])
+--vim.cmd([[highlight NvimTreeNormal bg=none]])
+--vim.cmd([[highlight NvimTreeNormalNC bg=none]])
+--vim.cmd([[highlight SignColumn bg=none]])
+--vim.cmd([[highlight TelescopeNormal bg=none]])
+--vim.cmd([[highlight TelescopeBorder bg=none]])
 
-vim.cmd([[highlight FloatBorder guibg=none]])
-vim.cmd([[highlight BufferLineGroupLabel guibg=none]])
-vim.cmd([[highlight NormalFloat guibg=none]])
+--vim.cmd([[highlight FloatBorder bg=none]])
+--vim.cmd([[highlight BufferLineGroupLabel bg=none]])
+--vim.cmd([[highlight NormalFloat bg=none]])
 
 -- Telescope prompt color
-vim.cmd([[highlight TelescopePromptPrefix guifg=#96f1ff]])
+--vim.cmd([[highlight TelescopePromptPrefix fg=#96f1ff]])
 
 
-vim.cmd([[highlight LineNr guifg=#5eacd3]])
-vim.cmd([[highlight qfFileName guifg=#aed75f]])
+--vim.cmd([[highlight LineNr fg=#5eacd3]])
+--vim.cmd([[highlight qfFileName fg=#aed75f]])
 
-vim.cmd([[highlight TelescopeBorder guifg=#5eacd3]])
+--vim.cmd([[highlight TelescopeBorder fg=#5eacd3]])
