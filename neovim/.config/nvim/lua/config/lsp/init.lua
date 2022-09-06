@@ -1,0 +1,10 @@
+require("config.lsp.mason")
+require("config.lsp.handlers").setup()
+require("config.lsp.golang")
+require("config.lsp.lua")
+require("config.lsp.bash")
+require("config.lsp.docker")
+require("config.lsp.terraform")
+require("config.lsp.yaml")
+
+require("config.lsp.null-ls")
