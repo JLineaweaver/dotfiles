@@ -114,10 +114,10 @@ return packer.startup(function(use)
   use("mizlan/iswap.nvim")
 
   --go
-  use { "ray-x/go.nvim"}
+  use { "ray-x/go.nvim" }
 
   --terraform
-  use { "hashivim/vim-terraform"}
+  use { "hashivim/vim-terraform" }
 
 
   --lsp
@@ -126,6 +126,17 @@ return packer.startup(function(use)
 
   --null-ls
   use { "jose-elias-alvarez/null-ls.nvim" }
+
+  --testing
+  use {
+    "nvim-neotest/neotest",
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "antoinemadec/FixCursorHold.nvim"
+    }
+  }
+  use { "nvim-neotest/neotest-go" }
 
   if PACKER_BOOTSTRAP then
     require("packer").sync()
