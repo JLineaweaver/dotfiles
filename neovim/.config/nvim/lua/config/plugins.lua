@@ -75,13 +75,13 @@ return packer.startup(function(use)
       saga.init_lsp_saga({
         border_style = "single",
         diagnostic_header = { " ", " ", " ", "ﴞ " },
-        code_action_icon = " ",
+        code_action_icon = " ",
         code_action_num_shortcut = true,
         code_action_lightbulb = {
           enable = true,
           sign = true,
           sign_priority = 20,
-          virtual_text = true,
+          virtual_text = true
         },
         max_preview_lines = 10,
         finder_action_keys = {
@@ -89,16 +89,18 @@ return packer.startup(function(use)
           vsplit = "s",
           split = "i",
           tabe = "t",
-          quit = "q",
+          quit = "<ESC>",
           scroll_down = "<Down>",
-          scroll_up = "<Up>",
+          scroll_up = "<Up>"
         },
+        definition_action_keys = {
+          quit = "<ESC>",
+        },
+        rename_action_quit = "<ESC>",
         code_action_keys = {
           quit = "<ESC>",
-          exec = "<CR>",
+          exec = "<CR>"
         },
-        rename_action_quit = "<C-c>",
-        definition_preview_icon = " ",
       })
     end,
   })

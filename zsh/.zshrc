@@ -16,12 +16,12 @@ export ZSH_CUSTOM="${ZSH}/custom"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 plugins=(
-    git 
+    git
     git-prompt
-    brew 
-    github 
+    brew
+    github
     terraform
-    macos 
+    macos
     z)
 
 source $ZSH/oh-my-zsh.sh
@@ -29,7 +29,7 @@ source $ZSH/oh-my-zsh.sh
 #auto complete smart case
 zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}'
 
-eval "$(chef shell-init zsh)"
+#eval "$(chef shell-init zsh)"
 
 # AWS stuff
 alias killaws="unset AWS_PROFILE;unset AWS_OKTA_SESSION_EXPIRATION;unset AWS_SECURITY_TOKEN;unset AWS_SESSION_TOKEN;unset AWS_OKTA_ASSUMED_ROLE;unset AWS_OKTA_ASSUMED_ROLE_ARN;unset AWS_OKTA_PROFILE;unset AWS_SECRET_ACCESS_KEY;unset AWS_ACCESS_KEY_ID;unset AWS_REGION;unset AWS_DEFAULT_REGION;unset AWS_OKTA_PROFILE"
