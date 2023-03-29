@@ -1,6 +1,7 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+export XDG_CONFIG_HOME=~/.config
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -8,7 +9,7 @@ fi
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 fi
-export ZSH="/Users/jlineaweaver/ohmyzsh"
+export ZSH="$HOME/ohmyzsh"
 export ZSH_CACHE_DIR="${ZSH}/cache"
 export ZSH_CUSTOM="${ZSH}/custom"
 
@@ -81,6 +82,7 @@ alias emoji='f() { echo $(yes ":$1:" | head -n $2) | tr -d " " | pbcopy};f'
 alias k="kubectl"
 alias killkube='kubectl config unset current-context'
 alias setkube='kubectl config set current-context ~/.kube/config'
+export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
 alias t='~/./starttmux.sh'
 
@@ -100,6 +102,7 @@ function master-to-main {
         git branch -u origin/main main
 }
 
+#export XDG_CONFIG_HOME=~/.k9s
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 

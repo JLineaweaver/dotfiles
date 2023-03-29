@@ -14,7 +14,7 @@ alias weather="curl wttr.in/Denver"
 alias vim="nvim"
 
 #thefuck
-eval $(thefuck --alias)
+#eval $(thefuck --alias)
 
 #change around for ranger
 alias r=". ranger"
