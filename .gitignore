@@ -1,4 +1,5 @@
 zsh/.config/zsh/twilio.sh
+zsh/.config/zsh/dd.sh
 neovim/.local/*
 neovim/.config/nvim/old
 neovim/.config/nvim/plugin
