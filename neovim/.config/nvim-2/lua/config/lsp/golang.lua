@@ -26,6 +26,7 @@ lspconfig.gopls.setup {
         unusedparams = true,
       },
       staticcheck = true,
+      --expandWorkspaceToModule = false,
     },
   },
 }

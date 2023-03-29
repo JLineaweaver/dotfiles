@@ -1,12 +1,25 @@
 local actions = require("telescope.actions")
 
-require('telescope').setup{
+require('telescope').setup {
   defaults = {
     -- Default configuration for telescope goes here:
     -- config_key = value,
     prompt_prefix = " ",
     selection_caret = " ",
-    file_ignore_patterns = {"vendor"},
+    file_ignore_patterns = { "vendor" },
+    vimgrep_arguments = {
+      "rg",
+      "--follow",
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+      "--no-ignore",
+      "--trim",
+      "--hidden",
+    },
     mappings = {
       i = {
         -- map actions.which_key to <C-h> (default: <C-/>)
@@ -33,6 +46,9 @@ require('telescope').setup{
     --         },
     --     },
     -- },
+    find_files = {
+      hidden = true,
+    },
     buffers = {
       attach_mappings = function(_, map)
         map("i", "<c-b>", actions.delete_buffer)

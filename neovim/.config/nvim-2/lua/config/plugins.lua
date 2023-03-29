@@ -43,15 +43,22 @@ return packer.startup(function(use)
 
   --theme
   use { 'dracula/vim', as = 'dracula' }
+  use { 'ray-x/starry.nvim' }
 
   --lualine
-  use { "nvim-lualine/lualine.nvim" }
+  use { "nvim-lualine/lualine.nvim",
+    requires = {
+      'nvim-tree/nvim-web-devicons', -- optional, for file icons
+    } }
 
   --tmux
   use("christoomey/vim-tmux-navigator")
 
   --nvim tree
-  use { "kyazdani42/nvim-tree.lua" }
+  use { "kyazdani42/nvim-tree.lua",
+    requires = {
+      'nvim-tree/nvim-web-devicons', -- optional, for file icons
+    } }
 
   --telescope
   use { 'nvim-lua/plenary.nvim' }
@@ -64,6 +71,7 @@ return packer.startup(function(use)
   use { "hrsh7th/cmp-nvim-lsp" } -- lsp completions
   use { "hrsh7th/cmp-nvim-lua" }
   use { "hrsh7th/cmp-cmdline" }
+  use { 'L3MON4D3/LuaSnip' } -- snippet completions
   use { "saadparwaiz1/cmp_luasnip" } -- snippet completions
   use { "rafamadriz/friendly-snippets" } -- a bunch of snippets to use
   use({
@@ -77,6 +85,10 @@ return packer.startup(function(use)
         diagnostic_header = { " ", " ", " ", "ﴞ " },
         code_action_icon = " ",
         code_action_num_shortcut = true,
+        code_action_keys = {
+          quit = 'q',
+          exec = '<CR>',
+        },
         code_action_lightbulb = {
           enable = true,
           sign = true,
@@ -97,10 +109,6 @@ return packer.startup(function(use)
           quit = "<ESC>",
         },
         rename_action_quit = "<ESC>",
-        code_action_keys = {
-          quit = "<ESC>",
-          exec = "<CR>"
-        },
       })
     end,
   })
@@ -117,6 +125,7 @@ return packer.startup(function(use)
 
   --go
   use { "ray-x/go.nvim" }
+  use { 'ray-x/guihua.lua' }
 
   --terraform
   use { "hashivim/vim-terraform" }

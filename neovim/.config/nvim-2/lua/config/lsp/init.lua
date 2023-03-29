@@ -1,6 +1,6 @@
 require("config.lsp.mason")
 require("config.lsp.handlers").setup()
-require("config.lsp.golang")
+--require("config.lsp.golang")
 require("config.lsp.lua")
 require("config.lsp.bash")
 require("config.lsp.docker")

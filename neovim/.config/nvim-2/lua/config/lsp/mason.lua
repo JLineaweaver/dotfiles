@@ -1,3 +1,11 @@
+--test
+local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
+if not lspconfig_status_ok then
+	return
+end
+
+
+
 local present, mason = pcall(require, "mason")
 if not present then
   return
@@ -32,18 +40,16 @@ mason_options = {
 mason_lsp_options = {
   automatic_installation = true,
   ensure_installed = {
-    "actionlint",
     "ansiblels",
     "bashls",
     "diagnosticls",
     "dockerls",
     "gopls",
     "jsonls",
-    "shfmt",
     "tflint",
     "yamlls",
     "sumneko_lua",
-    "shellcheck",
+    --"yamllint",
     "marksman"
   }
 }

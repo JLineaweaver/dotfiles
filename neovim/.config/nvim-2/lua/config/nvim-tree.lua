@@ -58,29 +58,6 @@ nvim_tree.setup {
     relativenumber = false,
   },
   renderer = {
-    icons = {
-      glyphs = {
-        default = "",
-        symlink = "",
-        git = {
-          unstaged = "●",
-          staged = "S",
-          unmerged = "",
-          renamed = "➜",
-          deleted = "",
-          untracked = "U",
-          ignored = "◌",
-        },
-        folder = {
-          arrow_open = "",
-          arrow_closed = "",
-          default = "",
-          open = "",
-          empty = "",
-          empty_open = "",
-          symlink = "",
-        },
-      }
-    },
+    group_empty = true
   },
 }

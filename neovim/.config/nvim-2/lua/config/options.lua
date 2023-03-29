@@ -21,6 +21,7 @@ o.updatetime = 50
 o.signcolumn = "yes"
 o.mouse = "nv"
 o.showmode = false
+o.grepprg = "rg --hidden --vimgrep --smart-case --"
 
 vim.cmd([[set ignorecase]])
 vim.cmd([[set smartcase]])

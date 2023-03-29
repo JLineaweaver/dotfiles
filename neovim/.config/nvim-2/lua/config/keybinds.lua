@@ -12,6 +12,12 @@ vim.g.mapleader = " "
 keymap("n", "<S-l>",      ":bnext<CR>", opts)
 keymap("n", "<S-h>",    ":bprevious<CR>", opts)
 keymap("n", "<leader>q",  ":Bdelete<CR>", opts)
+keymap("n", "<C-S-Up>", ":resize -2<CR>", opts)
+keymap("n", "<C-S-Down>", ":resize +2<CR>", opts)
+keymap("n", "<C-S-Left>", ":vertical resize -2<CR>", opts)
+keymap("n", "<C-S-Right>", ":vertical resize +2<CR>", opts)
+
+
 
 --Tmux
 keymap("n", "<C-Left>",   ":TmuxNavigateLeft<CR>", opts)
@@ -34,7 +40,7 @@ keymap("n", "<leader>fb",  ":Telescope buffers<CR>", opts)
 --Lsp
 keymap("n", "K",  ":Lspsaga hover_doc<CR>", opts)
 keymap("n", "<leader>gs", ":Lspsaga signature_help<CR>", opts)
-keymap("n", "gD", ":Lspsaga preview_definition<CR>", opts)
+keymap("n", "gD", ":Lspsaga peek_definition<CR>", opts)
 keymap("n", "gr", ":Lspsaga lsp_finder<CR>", opts)
 keymap("n", "<leader>n",  ":Lspsaga diagnostic_jump_next<CR>", opts)
 keymap("n", "<leader>p",  ":Lspsaga diagnostic_jump_prev<CR>", opts)

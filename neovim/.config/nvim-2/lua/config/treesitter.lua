@@ -14,6 +14,7 @@ configs.setup({
     'lua',
     'make',
     'markdown',
+    'proto',
     'toml',
     'regex',
     'vim',
