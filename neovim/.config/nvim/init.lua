@@ -24,10 +24,18 @@ require('packer').startup(function(use)
       -- Automatically install LSPs to stdpath for neovim
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
+    },
+  }
 
       -- Useful status updates for LSP
-      'j-hui/fidget.nvim',
-    },
+  use {
+    'j-hui/fidget.nvim',
+    tag = 'legacy',
+    config = function()
+      require("fidget").setup {
+        -- options
+      }
+    end,
   }
 
   use { -- Autocompletion
@@ -41,6 +49,8 @@ require('packer').startup(function(use)
       pcall(require('nvim-treesitter.install').update { with_sync = true })
     end,
   }
+  use 'nvim-treesitter/nvim-treesitter-context'
+
 
   use { -- Go LSP and extras
     'ray-x/go.nvim',
@@ -79,6 +89,9 @@ require('packer').startup(function(use)
 
   -- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', cond = vim.fn.executable 'make' == 1 }
+
+  -- Use for Github
+  use "almo7aya/openingh.nvim"
 
   -- Add custom plugins to packer from /nvim/lua/custom/plugins.lua
   local has_plugins, plugins = pcall(require, 'custom.plugins')
@@ -419,10 +432,17 @@ require('lspconfig').lua_ls.setup {
 
 -- Go 
 require('go').setup({
+  build_tags = "kubeapiserver cri orchestrator kubelet",
+  -- goimport = 'gopls',
+  -- gofmt = 'gopls',
   lsp_cfg = {
     capabilities = capabilities,
-    },
-  lsp_on_attach = on_attach
+    --formatting.local = "github.com/DataDog,go.ddbuild.io"
+  },
+  lsp_inlay_hints = {
+    enable = false,
+  },
+  lsp_on_attach = on_attach,
 })
 -- Run gofmt + goimport on save
 
