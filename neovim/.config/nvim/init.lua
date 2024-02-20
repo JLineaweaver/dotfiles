@@ -27,7 +27,7 @@ require('packer').startup(function(use)
     },
   }
 
-      -- Useful status updates for LSP
+  -- Useful status updates for LSP
   use {
     'j-hui/fidget.nvim',
     tag = 'legacy',
@@ -51,13 +51,16 @@ require('packer').startup(function(use)
   }
   use 'nvim-treesitter/nvim-treesitter-context'
 
+  -- Formatting
+  use({
+    "stevearc/conform.nvim",
+  })
+  -- Linting
+  use { "mfussenegger/nvim-lint" }
 
-  use { -- Go LSP and extras
-    'ray-x/go.nvim',
-    'ray-x/guihua.lua', -- recommanded if need floating window support
-    requires = { 'neovim/nvim-lspconfig', 'nvim-treesitter/nvim-treesitter'}
-  }
-
+  -- Folding
+  use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }
+  use { "luukvbaal/statuscol.nvim" }
 
   use { -- Additional text objects via treesitter
     'nvim-treesitter/nvim-treesitter-textobjects',
@@ -69,11 +72,11 @@ require('packer').startup(function(use)
   use 'tpope/vim-rhubarb'
   use 'lewis6991/gitsigns.nvim'
 
-  use 'navarasu/onedark.nvim' -- Theme inspired by Atom
-  use 'nvim-lualine/lualine.nvim' -- Fancier statusline
+  use 'navarasu/onedark.nvim'               -- Theme inspired by Atom
+  use 'nvim-lualine/lualine.nvim'           -- Fancier statusline
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-  use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
-  use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
+  use 'numToStr/Comment.nvim'               -- "gc" to comment visual regions/lines
+  use 'tpope/vim-sleuth'                    -- Detect tabstop and shiftwidth automatically
 
   --nvim tree
   use { "kyazdani42/nvim-tree.lua",
@@ -92,6 +95,27 @@ require('packer').startup(function(use)
 
   -- Use for Github
   use "almo7aya/openingh.nvim"
+
+  -- Lsp Lines/Errors
+  use({
+    "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+    config = function()
+      require("lsp_lines").setup()
+    end,
+  })
+
+  -- Copilot
+  use { "zbirenbaum/copilot.lua" }
+  use {
+    "zbirenbaum/copilot-cmp",
+    after = { "copilot.lua" },
+    config = function()
+      require("copilot_cmp").setup()
+    end
+  }
+
+
+  use { 'ThePrimeagen/harpoon', branch = 'harpoon2', requires = { 'nvim-lua/plenary.nvim' } }
 
   -- Add custom plugins to packer from /nvim/lua/custom/plugins.lua
   local has_plugins, plugins = pcall(require, 'custom.plugins')
@@ -201,10 +225,8 @@ require('Comment').setup()
 
 -- Enable `lukas-reineke/indent-blankline.nvim`
 -- See `:help indent_blankline.txt`
-require('indent_blankline').setup {
-  char = '┊',
-  show_trailing_blankline_indent = false,
-}
+require("ibl").setup()
+
 
 -- Gitsigns
 -- See `:help gitsigns.txt`
@@ -222,10 +244,16 @@ require('gitsigns').setup {
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
   defaults = {
+    path_display = function(opts, path)
+      local tail = require("telescope.utils").path_tail(path)
+      return string.format("%s (%s)", tail, path)
+    end,
+    -- wrap_results = true,
     mappings = {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
+        ['<C-l>'] = require('telescope.actions.layout').toggle_preview,
       },
     },
   },
@@ -233,6 +261,28 @@ require('telescope').setup {
     sort_mru = true,
     ignore_current_buffer = true,
     cwd_only = true,
+  },
+  pickers = {
+    buffers = {
+      sort_lastused = true
+    },
+    current_buffer_tags = { fname_width = 100, },
+    jumplist = { fname_width = 100, },
+    loclist = { fname_width = 100, },
+    lsp_definitions = { fname_width = 100, },
+    lsp_document_symbols = { fname_width = 100, },
+    lsp_dynamic_workspace_symbols = { fname_width = 100, },
+    lsp_implementations = { fname_width = 100, },
+    lsp_incoming_calls = { fname_width = 100, },
+    lsp_outgoing_calls = { fname_width = 100, },
+    lsp_references = { fname_width = 100, },
+    lsp_type_definitions = { fname_width = 100, },
+    lsp_workspace_symbols = { fname_width = 100, },
+    quickfix = { fname_width = 100, },
+    tags = { fname_width = 100, },
+    --find_files = {
+    --theme = "dropdown",
+    --}
   },
 }
 
@@ -310,10 +360,10 @@ require('nvim-treesitter.configs').setup {
     swap = {
       enable = true,
       swap_next = {
-        ['<leader>a'] = '@parameter.inner',
+        ['<leader>A'] = '@parameter.inner',
       },
       swap_previous = {
-        ['<leader>A'] = '@parameter.inner',
+        ['<leader>AA'] = '@parameter.inner',
       },
     },
   },
@@ -379,8 +429,7 @@ require('mason').setup()
 
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
---local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'sumneko_lua', 'gopls' }
-local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'lua_ls'}
+local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'lua_ls', 'gopls' }
 
 -- Ensure the servers above are installed
 require('mason-lspconfig').setup {
@@ -390,6 +439,12 @@ require('mason-lspconfig').setup {
 -- nvim-cmp supports additional completion capabilities
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+
+-- Needed for folds
+capabilities.textDocument.foldingRange = {
+  dynamicRegistration = false,
+  lineFoldingOnly = true
+}
 
 for _, lsp in ipairs(servers) do
   require('lspconfig')[lsp].setup {
@@ -401,72 +456,88 @@ end
 -- Turn on lsp status information
 require('fidget').setup()
 
--- Example custom configuration for lua
---
--- Make runtime files discoverable to the server
-local runtime_path = vim.split(package.path, ';')
-table.insert(runtime_path, 'lua/?.lua')
-table.insert(runtime_path, 'lua/?/init.lua')
-
-require('lspconfig').lua_ls.setup {
+-- Go  custom config
+local util = require "lspconfig/util"
+require('lspconfig').gopls.setup {
   on_attach = on_attach,
   capabilities = capabilities,
+  cmd = { "gopls", "serve" },
+  filetypes = { "go", "gomod" },
+  root_dir = util.root_pattern("go.work", "go.mod", ".git"),
   settings = {
-    Lua = {
-      runtime = {
-        -- Tell the language server which version of Lua you're using (most likely LuaJIT)
-        version = 'LuaJIT',
-        -- Setup your lua path
-        path = runtime_path,
+    gopls = {
+      analyses = {
+        unusedparams = true,
       },
-      diagnostics = {
-        globals = { 'vim' },
-      },
-      workspace = { library = vim.api.nvim_get_runtime_file('', true) },
-      -- Do not send telemetry data containing a randomized but unique identifier
-      telemetry = { enable = false },
-      checkThirdParty = false,
+      buildFlags = { "-tags=kubeapiserver cri orchestrator kubelet" },
+      completeUnimported = true,
+      usePlaceholders = true,
+      staticcheck = true,
     },
   },
 }
 
--- Go 
-require('go').setup({
-  build_tags = "kubeapiserver cri orchestrator kubelet",
-  -- goimport = 'gopls',
-  -- gofmt = 'gopls',
-  lsp_cfg = {
-    capabilities = capabilities,
-    --formatting.local = "github.com/DataDog,go.ddbuild.io"
+-- Formatting
+require("conform").setup({
+  formatters_by_ft = {
+    -- https://github.com/mvdan/gofumpt
+    -- https://pkg.go.dev/golang.org/x/tools/cmd/goimports (auto imports)
+    -- https://github.com/incu6us/goimports-reviser
+    go = { "gofumpt", "goimports", "goimports-reviser -company-prefix" },
+    -- https://github.com/mantoni/eslint_d.js/
+    javascript = { "eslint_d" },
+    -- https://github.com/stedolan/jq
+    jq = { "jq" },
+    -- https://github.com/rhysd/fixjson
+    json = { "fixjson" },
+    -- https://github.com/executablebooks/mdformat
+    markdown = { "mdformat" },
+    -- https://github.com/rust-lang/rustfmt
+    rust = { "rustfmt" },
+    -- https://github.com/koalaman/shellcheck
+    sh = { "shellcheck" },
+    -- https://www.terraform.io/docs/cli/commands/fmt.html
+    terraform = { "terraform_fmt" },
+    -- https://github.com/tamasfe/taplo
+    toml = { "taplo" },
+    -- http://xmlsoft.org/xmllint.html
+    xml = { "xmllint" },
+    -- https://github.com/koalaman/shellcheck
+    zsh = { "shellcheck" }
   },
-  lsp_inlay_hints = {
-    enable = false,
-  },
-  lsp_on_attach = on_attach,
-})
--- Run gofmt + goimport on save
-
-local format_sync_grp = vim.api.nvim_create_augroup("GoImport", {})
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*.go",
-  callback = function()
-   require('go.format').goimport()
-  end,
-  group = format_sync_grp,
+  format_on_save = { async = true, lsp_fallback = true }
+  --format_on_save = { async = true, timeout_ms = 5000, lsp_fallback = true }
 })
 
+-- Linting
+local lint = require("lint")
+lint.linters_by_ft = {
+  -- https://golangci-lint.run/
+  go = { "golangcilint" },
+  -- https://github.com/mantoni/eslint_d.js
+  javascript = { "eslint_d" },
+  -- https://github.com/zaach/jsonlint
+  json = { "jsonlint" },
+  -- https://github.com/DavidAnson/markdownlint
+  markdown = { "markdownlint" },
+  -- https://www.shellcheck.net/
+  sh = { "shellcheck" },
+  -- https://github.com/aquasecurity/tfsec
+  terraform = { "tfsec" },
+  -- https://github.com/rhysd/actionlint
+  -- https://github.com/adrienverge/yamllint https://yamllint.readthedocs.io/en/stable/rules.html
+  yaml = { "actionlint", "yamllint" },
+  -- https://www.shellcheck.net/
+  -- https://www.zsh.org/
+  zsh = { "shellcheck", "zsh" },
+}
 
--- require('lspconfig').gopls.setup{
---   on_attach = on_attach,
---   capabilities = capabilities,
---   settings = {
---     gopls = {
---       env = {GOFLAGS="-tags=kubeapiserver,cri,orchestrator,kubelet"}
---       --buildFlags = {"kubeapiserver cri orchestrator kubelet"}
---     }
---   }
--- }
-
+vim.api.nvim_create_autocmd({
+  "BufReadPost", "BufWritePost", "InsertLeave"
+}, {
+  group = vim.api.nvim_create_augroup("Linting", { clear = true }),
+  callback = function() lint.try_lint() end
+})
 
 -- nvim-cmp setup
 local cmp = require 'cmp'
@@ -482,7 +553,7 @@ cmp.setup {
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
-    ['<CR>'] = cmp.mapping.confirm {
+    ['<C-s>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
@@ -508,6 +579,7 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
+    { name = "copilot", group_index = 2 },
   },
 }
 
@@ -515,7 +587,7 @@ cmp.setup {
 -- Nvim-tree setup
 -- empty setup using defaults
 require("nvim-tree").setup({
- update_focused_file = {
+  update_focused_file = {
     enable = true,
     --update_cwd = true,
     ignore_list = {},
@@ -529,5 +601,134 @@ require("nvim-tree").setup({
 })
 vim.keymap.set('n', '<C-n>', ":NvimTreeToggle<CR>", { desc = 'Nerdtree ish' })
 
+
+-- Folding
+vim.o.foldcolumn = "1" -- '0' is not bad
+vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+
+-- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+
+require('ufo').setup()
+local builtin = require("statuscol.builtin")
+StatusCfg = {
+  setopt = true,
+  relculright = true,
+  segments = {
+
+    {
+      text = { builtin.foldfunc, " " },
+      click = "v:lua.ScFa",
+      hl = "Comment",
+    },
+
+    { text = { "%s" },                  click = "v:lua.ScSa" },
+    { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa", },
+  }
+}
+
+
+require("statuscol").setup(StatusCfg)
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+
+require('copilot').setup({
+  panel = {
+    enabled = true,
+    auto_refresh = false,
+    keymap = {
+      jump_prev = "[[",
+      jump_next = "]]",
+      accept = "<CR>",
+      refresh = "gr",
+      open = "<M-CR>"
+    },
+    layout = {
+      position = "bottom", -- | top | left | right
+      ratio = 0.4
+    },
+  },
+  suggestion = {
+    enabled = true,
+    auto_trigger = false,
+    debounce = 75,
+    keymap = {
+      accept = "<M-l>",
+      accept_word = false,
+      accept_line = false,
+      next = "<M-]>",
+      prev = "<M-[>",
+      dismiss = "<C-]>",
+    },
+  },
+  filetypes = {
+    yaml = false,
+    markdown = false,
+    help = false,
+    gitcommit = false,
+    gitrebase = false,
+    hgcommit = false,
+    svn = false,
+    cvs = false,
+    ["."] = false,
+  },
+  copilot_node_command = 'node', -- Node.js version must be > 18.x
+  server_opts_overrides = {},
+})
+
+require("lsp_lines").setup()
+-- Disable virtual_text since it's redundant due to lsp_lines.
+vim.diagnostic.config({
+  virtual_text = false,
+})
+vim.keymap.set(
+  "",
+  "<Leader>l",
+  require("lsp_lines").toggle,
+  { desc = "Toggle lsp_lines" }
+)
+
+-- harpoon
+local harpoon = require("harpoon")
+
+-- REQUIRED
+harpoon:setup()
+-- REQUIRED
+
+vim.keymap.set("n", "<leader>hx", function() harpoon:list():append() end)
+vim.keymap.set("n", "<leader>hh", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+-- vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
+-- vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
+-- vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
+-- vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
+
+-- Toggle previous & next buffers stored within Harpoon list
+vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
+vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
+
+-- basic telescope configuration
+local conf = require("telescope.config").values
+local function toggle_telescope(harpoon_files)
+  local file_paths = {}
+  for _, item in ipairs(harpoon_files.items) do
+    table.insert(file_paths, item.value)
+  end
+
+  require("telescope.pickers").new({}, {
+    prompt_title = "Harpoon",
+    finder = require("telescope.finders").new_table({
+      results = file_paths,
+    }),
+    previewer = conf.file_previewer({}),
+    sorter = conf.generic_sorter({}),
+  }):find()
+end
+
+vim.keymap.set("n", "<leader>hf", function() toggle_telescope(harpoon:list()) end,
+  { desc = "Open harpoon window" })
