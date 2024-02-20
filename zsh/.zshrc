@@ -36,20 +36,12 @@ zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}'
 alias killaws="unset AWS_PROFILE;unset AWS_OKTA_SESSION_EXPIRATION;unset AWS_SECURITY_TOKEN;unset AWS_SESSION_TOKEN;unset AWS_OKTA_ASSUMED_ROLE;unset AWS_OKTA_ASSUMED_ROLE_ARN;unset AWS_OKTA_PROFILE;unset AWS_SECRET_ACCESS_KEY;unset AWS_ACCESS_KEY_ID;unset AWS_REGION;unset AWS_DEFAULT_REGION;unset AWS_OKTA_PROFILE"
 
 alias awsjosh="export AWS_PROFILE=\"josh\""
-alias awsspora="export AWS_PROFILE=\"spora\""
 
 alias fixt="rm .terraform/plugins/darwin_amd64/terraform-provider-dme*;terraform init"
 alias tf="terraform"
 alias tfi="terraform init"
 alias tfp="terraform plan"
 alias tfa="terraform apply"
-alias mcurl="/usr/local/bin/mcurl"
-alias jl="cd ~/go/src/github.com/jlineaweaver"
-alias sg="cd ~/go/src/github.com/sendgrid"
-alias sgo="cd ~/go/src/github.com/sendgrid-ops"
-alias sgd="cd ~/go/src/github.com/sendgrid-dev"
-alias seg="cd ~/go/src/github.com/segmentio"
-alias twl="cd ~/go/src/code.hq.twilio.com/twilio"
 alias clr="clear"
 
 #docker

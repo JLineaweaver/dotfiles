@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# brew install hub
+# https://github.com/settings/tokens
+# cat ~/.config/hub
+# github.com:
+# - protocol: https
+#   user: <whoami>
+#   oauth_token: YOURTOKEN
+
+set -e
+
+if [ "$1" == "" ] || [ "$2" == "" ]; then
+    echo "supply a feature name and branch prefix:"
+    echo "  pr-per-dc 'use-es8' 'fisher/es8-rollout/'"
+    exit 1
+fi
+
+name="$1"
+prefix="$2"
+
+cd $DATADOG_ROOT/consul-config
+git checkout master
+git pull
+
+cd datadog
+for dc in `ls -1 . | grep "\.dog$"`; do
+    cd $dc
+    if [ $(git status . | grep modified: | wc -l) != "0" ] ; then
+        git checkout -b "$prefix$(echo $dc | sed 's/[^a-zA-Z0-9]/-/g')"
+        git add .
+        git commit -m "[container-app] rollout $name to $dc"
+        git push -u origin HEAD
+        hub pull-request -m "[container-app] rollout $name to $dc" --no-edit
+        git checkout master
+    fi
+    cd ..
+done
+
+hub pr list | grep "$name" | sed -E 's/#([0-9]+).*to ([^ ]+).*/\2 - https:\/\/github.com\/DataDog\/consul-config\/pull\/\1/g'
