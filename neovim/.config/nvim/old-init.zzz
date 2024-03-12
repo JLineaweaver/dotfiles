@@ -1,0 +1,202 @@
+-- Josh's config
+
+-- this is for netrw
+-- disable netrw at the very start of your init.lua (strongly advised)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+require('packer').startup(function(use)
+
+
+  -- Folding
+  use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }
+  use { "luukvbaal/statuscol.nvim" }
+
+  use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
+  use 'tpope/vim-sleuth'                    -- Detect tabstop and shiftwidth automatically
+
+
+
+  use { 'ThePrimeagen/harpoon', branch = 'harpoon2', requires = { 'nvim-lua/plenary.nvim' } }
+
+  -- Add custom plugins to packer from /nvim/lua/custom/plugins.lua
+  local has_plugins, plugins = pcall(require, 'custom.plugins')
+  if has_plugins then
+    plugins(use)
+  end
+
+  if is_bootstrap then
+    require('packer').sync()
+  end
+end)
+
+-- When we are bootstrapping a configuration, it doesn't
+-- make sense to execute the rest of the init.lua.
+--
+-- You'll need to restart nvim, and then it will work.
+if is_bootstrap then
+  print '=================================='
+  print '    Plugins are being installed'
+  print '    Wait until Packer completes,'
+  print '       then restart nvim'
+  print '=================================='
+  return
+end
+
+-- Automatically source and re-compile packer whenever you save this init.lua
+local packer_group = vim.api.nvim_create_augroup('Packer', { clear = true })
+vim.api.nvim_create_autocmd('BufWritePost', {
+  command = 'source <afile> | PackerCompile',
+  group = packer_group,
+  pattern = vim.fn.expand '$MYVIMRC',
+})
+
+
+-- Enable `lukas-reineke/indent-blankline.nvim`
+-- See `:help indent_blankline.txt`
+require("ibl").setup()
+
+
+-- [[ Configure Telescope ]]
+-- See `:help telescope` and `:help telescope.setup()`
+require('telescope').setup {
+  defaults = {
+    path_display = function(opts, path)
+      local tail = require("telescope.utils").path_tail(path)
+      return string.format("%s (%s)", tail, path)
+    end,
+    -- wrap_results = true,
+    mappings = {
+      i = {
+        ['<C-u>'] = false,
+        ['<C-d>'] = false,
+        ['<C-l>'] = require('telescope.actions.layout').toggle_preview,
+      },
+    },
+  },
+  buffers = {
+    sort_mru = true,
+    ignore_current_buffer = true,
+    cwd_only = true,
+  },
+  pickers = {
+    buffers = {
+      sort_lastused = true
+    },
+    current_buffer_tags = { fname_width = 100, },
+    jumplist = { fname_width = 100, },
+    loclist = { fname_width = 100, },
+    lsp_definitions = { fname_width = 100, },
+    lsp_document_symbols = { fname_width = 100, },
+    lsp_dynamic_workspace_symbols = { fname_width = 100, },
+    lsp_implementations = { fname_width = 100, },
+    lsp_incoming_calls = { fname_width = 100, },
+    lsp_outgoing_calls = { fname_width = 100, },
+    lsp_references = { fname_width = 100, },
+    lsp_type_definitions = { fname_width = 100, },
+    lsp_workspace_symbols = { fname_width = 100, },
+    quickfix = { fname_width = 100, },
+    tags = { fname_width = 100, },
+    --find_files = {
+    --theme = "dropdown",
+    --}
+  },
+}
+
+-- Enable telescope fzf native, if installed
+pcall(require('telescope').load_extension, 'fzf')
+
+-- See `:help telescope.builtin`
+vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
+vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader>/', function()
+  -- You can pass additional configuration to telescope to change theme, layout, etc.
+  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+    winblend = 10,
+    previewer = false,
+  })
+end, { desc = '[/] Fuzzily search in current buffer]' })
+
+vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, { desc = '[F]ind [F]iles' })
+vim.keymap.set('n', '<leader>fh', require('telescope.builtin').help_tags, { desc = '[F]ind [H]elp' })
+vim.keymap.set('n', '<leader>fw', require('telescope.builtin').grep_string, { desc = '[F]ind current [W]ord' })
+vim.keymap.set('n', '<leader>fg', require('telescope.builtin').live_grep, { desc = '[F]ind by [G]rep' })
+vim.keymap.set('n', '<leader>fd', require('telescope.builtin').diagnostics, { desc = '[F]ind [D]iagnostics' })
+
+
+
+
+-- Folding
+vim.o.foldcolumn = "1" -- '0' is not bad
+vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+
+-- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+
+require('ufo').setup()
+local builtin = require("statuscol.builtin")
+StatusCfg = {
+  setopt = true,
+  relculright = true,
+  segments = {
+
+    {
+      text = { builtin.foldfunc, " " },
+      click = "v:lua.ScFa",
+      hl = "Comment",
+    },
+
+    { text = { "%s" },                  click = "v:lua.ScSa" },
+    { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa", },
+  }
+}
+
+
+require("statuscol").setup(StatusCfg)
+-- The line beneath this is called `modeline`. See `:help modeline`
+-- vim: ts=2 sts=2 sw=2 et
+
+
+-- harpoon
+local harpoon = require("harpoon")
+
+-- REQUIRED
+harpoon:setup()
+-- REQUIRED
+
+vim.keymap.set("n", "<leader>hx", function() harpoon:list():append() end)
+vim.keymap.set("n", "<leader>hh", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+-- vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
+-- vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
+-- vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
+-- vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
+
+-- Toggle previous & next buffers stored within Harpoon list
+vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
+vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
+
+-- basic telescope configuration
+local conf = require("telescope.config").values
+local function toggle_telescope(harpoon_files)
+  local file_paths = {}
+  for _, item in ipairs(harpoon_files.items) do
+    table.insert(file_paths, item.value)
+  end
+
+  require("telescope.pickers").new({}, {
+    prompt_title = "Harpoon",
+    finder = require("telescope.finders").new_table({
+      results = file_paths,
+    }),
+    previewer = conf.file_previewer({}),
+    sorter = conf.generic_sorter({}),
+  }):find()
+end
+
+vim.keymap.set("n", "<leader>hf", function() toggle_telescope(harpoon:list()) end,
+  { desc = "Open harpoon window" })
