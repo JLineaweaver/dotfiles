@@ -3,7 +3,15 @@ return {
 		"ibhagwan/fzf-lua",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
-			require("fzf-lua").setup({})
+			require("fzf-lua").setup(
+				{
+					keymap = {
+						builtin = {
+							["<c-f>"] = "toggle-fullscreen",
+							["<c-l>"] = "toggle-preview",
+						},
+					},
+				})
 		end,
 		keys = {
 			{ "<c-P>",           "<cmd>lua require('fzf-lua').files()<CR>",                                                               "find files" },
