@@ -6,9 +6,12 @@ return {
 			require("fzf-lua").setup({})
 		end,
 		keys = {
-			{ "<c-P>",           "<cmd>lua require('fzf-lua').files()<CR>",                                                              "find files" },
-			{ "<leader>fg",      "<cmd>lua require('fzf-lua').live_grep({ cmd = 'git grep --line-number --column --color=always' })<CR>" },
-			{ "<leader><space>", "<cmd>lua require('fzf-lua').buffers()<CR>" },
+			{ "<c-P>",           "<cmd>lua require('fzf-lua').files()<CR>",                                                               "find files" },
+			{ "<leader>ff",      "<cmd>lua require('fzf-lua').files()<CR>",                                                               "find files" },
+			{ "<leader>fa",      "<cmd>lua require('fzf-lua').git_files()<CR>",                                                           "find git files" },
+			{ "<leader>fg",      "<cmd>lua require('fzf-lua').live_grep({ cmd = 'git grep --line-number --column --color=always' })<CR>", "live grep" },
+			{ "<leader>fs",      "<cmd>lua require('fzf-lua').lsp_document_symbols()<CR>",                                                "find symbols" },
+			{ "<leader><space>", "<cmd>lua require('fzf-lua').buffers()<CR>",                                                             "find buffers" },
 		},
 	},
 	{
