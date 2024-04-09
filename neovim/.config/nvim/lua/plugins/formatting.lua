@@ -4,10 +4,13 @@ return {
 		config = function()
 			require("conform").setup({
 				formatters_by_ft = {
+					-- bazel = { "buildifier" },
+					-- bzl = { "buildifier" },
 					-- https://github.com/mvdan/gofumpt
 					-- https://pkg.go.dev/golang.org/x/tools/cmd/goimports (auto imports)
 					-- https://github.com/incu6us/goimports-reviser
-					go = { "gofumpt", "goimports", "goimports-reviser -company-prefix" },
+					-- go = { "gofumpt", "goimports", "goimports-reviser -company-prefix" },
+					go = { "gofmt", "goimports", "goimports-reviser" },
 					-- https://github.com/mantoni/eslint_d.js/
 					javascript = { "eslint_d" },
 					-- https://github.com/stedolan/jq
@@ -29,7 +32,7 @@ return {
 					-- https://github.com/koalaman/shellcheck
 					zsh = { "shellcheck" }
 				},
-				format_on_save = { async = true, lsp_fallback = true }
+				format_on_save = { async = false, quiet = false, lsp_fallback = true, timeout_ms = 3000, }
 			})
 		end,
 	},

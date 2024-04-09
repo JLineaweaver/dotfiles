@@ -5,7 +5,7 @@ return {
 			local lint = require("lint")
 			lint.linters_by_ft = {
 				-- https://golangci-lint.run/
-				go = { "golangcilint" },
+				-- go = { "golangcilint" },
 				-- https://github.com/mantoni/eslint_d.js
 				javascript = { "eslint_d" },
 				-- https://github.com/zaach/jsonlint
