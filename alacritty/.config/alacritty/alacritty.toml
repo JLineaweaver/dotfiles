@@ -49,8 +49,8 @@ size = 16.0
 x = 0
 y = 0
 
-# [font.normal]
-# family = "MesloLGS NF"
+[font.normal]
+family = "MesloLGS NF"
 
 [font.offset]
 x = 0
