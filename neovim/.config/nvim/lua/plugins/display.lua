@@ -3,16 +3,16 @@ return {
 	config = function()
 		require("no-neck-pain").setup({
 			width = 200,
-			buffers = {
-				right = {
-					enabled = false,
-				},
-			},
 			integrations = {
 				NvimTree = {
 					position = "left",
 					reopen = true,
 				},
+				neotest = {
+					position = "right",
+					reopen = true,
+				},
+
 			},
 		})
 	end,
