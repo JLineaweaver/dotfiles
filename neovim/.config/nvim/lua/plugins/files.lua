@@ -38,6 +38,9 @@ return {
 					show_hidden = true,
 				},
 			})
-		end
+		end,
+		keys = {
+			{ "<leader>o", "<cmd>Oil<CR>", "Oil" },
+		},
 	},
 }

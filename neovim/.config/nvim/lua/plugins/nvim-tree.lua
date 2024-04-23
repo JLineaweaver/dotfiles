@@ -5,6 +5,9 @@ return {
 	},
 	config = function()
 		require("nvim-tree").setup({
+			view = {
+				width = 42,
+			},
 			update_focused_file = {
 				enable = true,
 				ignore_list = {},
