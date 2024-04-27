@@ -45,16 +45,8 @@ TERM = "xterm-256color"
 [font]
 size = 16.0
 
-[font.glyph_offset]
-x = 0
-y = 0
-
 [font.normal]
-family = "MesloLGS NF"
-
-[font.offset]
-x = 0
-y = 0
+family = "JetBrainsMono Nerd Font"
 
 [[keyboard.bindings]]
 chars = "\u001BOH"
@@ -583,18 +575,8 @@ chars = "\u001B[24;3~"
 key = "F12"
 mods = "Super"
 
-[[keyboard.bindings]]
-chars = """
-
-"""
-key = "NumpadEnter"
-
 [mouse]
 hide_when_typing = false
-
-[[mouse.bindings]]
-action = "PasteSelection"
-mouse = "Middle"
 
 [scrolling]
 history = 10000
@@ -604,15 +586,3 @@ multiplier = 3
 save_to_clipboard = true
 semantic_escape_chars = ",│`|:\"' ()[]{}<>"
 
-[window]
-decorations = "full"
-dynamic_padding = false
-startup_mode = "Windowed"
-
-[window.dimensions]
-columns = 0
-lines = 0
-
-[window.padding]
-x = 0
-y = 0

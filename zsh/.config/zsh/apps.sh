@@ -13,6 +13,7 @@ alias cat="bat"
 alias weather="curl wttr.in/Denver"
 alias moon="curl wttr.in/Moon"
 alias vim="nvim"
+alias notes="nvim ~/notes"
 
 #thefuck
 #eval $(thefuck --alias)
