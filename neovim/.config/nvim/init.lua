@@ -70,3 +70,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- Conceal level which is needed for Neorg
 vim.o.conceallevel = 2
+
+-- Custom command to push notes
+vim.api.nvim_create_user_command("NCI", "!git add . && git commit -m '" .. os.date("%Y-%m-%d") .. "' && git push", {})
