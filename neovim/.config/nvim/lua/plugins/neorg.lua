@@ -7,6 +7,7 @@ return {
 	{
 		"nvim-neorg/neorg",
 		dependencies = { { "luarocks.nvim" }, { "nvim-lua/plenary.nvim" }, { "nvim-neorg/neorg-telescope" } },
+		lazy = false,
 		-- put any other flags you wanted to pass to lazy here!
 		config = function()
 			require("neorg").setup({
