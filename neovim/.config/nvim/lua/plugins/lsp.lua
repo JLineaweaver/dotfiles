@@ -98,7 +98,10 @@ return { -- LSP Configuration & Plugins
 				settings = {
 					gopls = {
 						analyses = {
+							nilness = true,
 							unusedparams = true,
+							unusedwrite = true,
+							useany = true,
 						},
 						buildFlags = { "-tags=kubeapiserver cri orchestrator kubelet" },
 						completeUnimported = true,
