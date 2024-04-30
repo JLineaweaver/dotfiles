@@ -3,3 +3,4 @@ zsh/.config/zsh/dd.sh
 neovim/.local/*
 neovim/.config/nvim/old
 neovim/.config/nvim/plugin
+.luarc.json
