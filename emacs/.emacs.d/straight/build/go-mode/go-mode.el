@@ -1,0 +1,1 @@
+/Users/josh.lineaweaver/.emacs.d/straight/repos/go-mode.el/go-mode.el

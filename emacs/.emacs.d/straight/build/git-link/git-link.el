@@ -1,0 +1,1 @@
+/Users/josh.lineaweaver/.emacs.d/straight/repos/git-link/git-link.el

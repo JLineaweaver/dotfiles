@@ -1,0 +1,1 @@
+/Users/josh.lineaweaver/.emacs.d/straight/repos/terraform-mode/terraform-mode.el
