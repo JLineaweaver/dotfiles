@@ -1,11 +1,18 @@
 return {
 	{
 		'hrsh7th/nvim-cmp',
-		dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
+		dependencies = {
+			'onsails/lspkind.nvim',
+			'hrsh7th/cmp-nvim-lsp',
+			'L3MON4D3/LuaSnip',
+			'saadparwaiz1/cmp_luasnip'
+		},
 		config = function()
 			-- nvim-cmp setup
 			local cmp = require 'cmp'
 			local luasnip = require 'luasnip'
+			local lspkind = require 'lspkind'
+			lspkind.init {}
 
 			cmp.setup {
 				preselect = cmp.PreselectMode.None,

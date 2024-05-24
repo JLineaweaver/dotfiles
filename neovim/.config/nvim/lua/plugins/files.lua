@@ -28,13 +28,13 @@ return {
 	{ 'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' },
 	{
 		'stevearc/oil.nvim',
-		opts = {},
-		-- Optional dependencies
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("oil").setup({
+				keymaps = {
+					["<C-h>"] = false,
+				},
 				view_options = {
-					-- Show files and directories that start with "."
 					show_hidden = true,
 				},
 			})
