@@ -36,3 +36,4 @@ alias stocks='mop'
 #emacs
 alias doomr='~/.emacs.d/bin/doom refresh'
 
+alias gtb='gotestbranch'
