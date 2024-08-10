@@ -1,0 +1,206 @@
+#!/bin/bash
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CHECK PRE-REQS
+
+ag -h > /dev/null 2> /dev/null
+if [ $? -ne 0 ] ; then
+    echo "Missing dependency 'ag' - you can install it via 'brew install the_silver_searcher'"
+    exit 1
+fi
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CONFIRM WE'RE IN A GIT REPO
+
+root=$(git rev-parse --show-toplevel)
+if [ $? -ne 0 ] ; then
+  echo "Not in a git repository!"
+  exit 1
+fi
+cd "$root" || exit
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PARSE ARGUMENTS
+
+skipPackages=""
+cleanTestCache=""
+testArgs=()
+local=""
+base=""
+mode=""
+dryRun=""
+noDeps=""
+for arg in "$@" ; do
+    case $arg in
+        # argument modes
+        -args)
+            mode="args";;
+        -skip)
+            mode="skip";;
+        -base)
+            mode="base";;
+        # toggles
+        -clean)
+            cleanTestCache="true"
+            mode="";;
+        -local)
+            local="true"
+            mode="";;
+        -dry)
+            dryRun="true"
+            mode="";;
+        -nodeps)
+            noDeps="true"
+            mode="";;
+        # help
+        -help)
+            echo "Usage: gotestbranch <arguments>"
+            echo "Available arguments:"
+            echo "  -help - prints this output"
+            echo "  -args <test-arg-1> <test-arg-n> - supply '-args' to 'go test'"
+            echo "  -skip <substring-1> <substring-n> - skips packages matching the supplied pattern when testing"
+            echo "  -local - calculates the diff based on changes that have not been pushed to origin"
+            echo "  -base <branch/commit> - what to compare the current changes to when detecting packages to test"
+            echo "  -clean - clears the go test cache before running tests"
+            echo "  -dry - detect impacted packages only, do not run tests"
+            echo "  -nodeps - skip detecting dependent packages, only test modified packages"
+            exit 0;;
+        *)
+            # mode argument handling
+            case $mode in
+                args)
+                    testArgs+=("$arg");;
+                skip)
+                    skipPackages+="$arg"$'\n';;
+                base)
+                    if [ "$base" != "" ] ; then
+                        echo "You can only specify one base"
+                        exit 1
+                    fi
+                    base="$arg";;
+                *)
+                    echo "Invalid argument '$arg' ($mode). Try --help"
+                    exit 1;;
+            esac;;
+    esac
+done
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IDENTIFY MODIFIED PACKAGES
+
+module=$(cat go.mod | grep "^module github." | head -n1 | cut -d' ' -f2)
+if [ "$base" == "" ] ; then
+    if [ "$local" ] ; then
+        base=$(git rev-parse --abbrev-ref HEAD)
+    else
+        base=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+    fi
+    echo "Autodetected '$base' as the base branch"
+fi
+compareAgainst="origin/$base"
+if [ "$local" == "" ] ; then
+    compareAgainst=$(git merge-base HEAD "$base")
+fi
+packages=$(git diff --name-only "$compareAgainst" | xargs dirname | sort | uniq | sed -e "s~^~$module/~")
+echo "Working directory: $(pwd)"
+echo "Module: $module"
+
+if [ "$packages" == "" ] ; then
+    echo "No changes were detected [HEAD > $compareAgainst]"
+    exit 0
+fi
+
+echo "Packages modified: $(echo "$packages" | wc -l) [HEAD > $compareAgainst]"
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> IDENTIFY IMPACTED PACKAGES
+
+testPackages="$packages"
+
+if [ "$noDeps" ] ; then
+    for package in $packages ; do
+        echo " - $package"
+    done
+    echo "Skipped dependent package detection"
+else
+    dependencies=""
+    IFS=$'\n'
+    for package in $packages ; do
+        localDeps=$(ag -l -G '\.go$' "$package" | xargs dirname | sort | uniq)
+        if [ "$localDeps" == "" ] ; then
+            echo " - $package (no dependencies)"
+            continue
+        fi
+        echo " - $package ($(echo "$localDeps" | wc -l) dependent packages)"
+        #echo "$localDeps" && echo && echo # debugging
+        dependencies+="
+$localDeps" # new line intentional
+    done
+    dependencies=$(echo "$dependencies" | sort | uniq | sed '/^$/d' | sed -e "s~^~$module/~")
+
+    echo "Total upstream dependent packages: $(echo "$dependencies" | wc -l)"
+    for package in $dependencies ; do
+        echo " - $package"
+    done
+
+    testPackages+="
+    $dependencies" # new line intentional
+    testPackages=$(echo "$testPackages" | sort | uniq)
+    echo "Total packages directly impacted by changes: $(echo "$testPackages" | wc -l)"
+fi
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FILTER IMPACTED PACKAGES
+
+for skipPackage in $skipPackages ; do
+    preCount=$(echo "$testPackages" | wc -l)
+    testPackages=$(echo "$testPackages" | grep -v -F "$skipPackage")
+    postCount=$(echo "$testPackages" | wc -l)
+    diff=$((preCount-postCount))
+    if [ "$diff" -ne "0" ] ; then
+        echo "The '$skipPackage' filter removed $diff package(s) from the testing target"
+    fi
+done
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PRE TEST OPTIONS
+
+if [ "$cleanTestCache" != "" ] ; then
+    echo "Cleaning test cache..."
+    go clean -testcache
+fi
+
+if [ "$dryRun" != "" ] ; then
+    echo "In dry run mode, skipping tests"
+    exit 0
+fi
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RUN TESTS
+
+goTestPackages=()
+for package in $testPackages ; do
+    goTestPackages+=($package)
+done
+goTestArgs=()
+if [ ${#testArgs[@]} -ne 0 ]; then
+    goTestArgs+=("-args")
+    goTestArgs="${goTestArgs[@]} ${testArgs[@]}"
+fi
+
+echo "Testing $(echo "$testPackages" | wc -l) packages..."
+echo "==================================================================================================="
+exec 5>&1
+output=$(eval "go test ${goTestPackages[@]} ${goTestArgs[@]}" | tee /dev/fd/5)
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> PARSE TEST RESULTS
+
+failures=$(echo "$output" | grep -E "^FAIL\s+$module")
+echo "$failures" #> out.txt
+echo "==================================================================================================="
+if [ "$failures" == "" ] ; then
+    echo "Tests were SUCCESSFUL"
+    exit 0
+fi
+goRetestPackages=()
+for failure in "$failures" ; do
+    failedPkg=$(echo "$failure" | sed -E 's/FAIL[[:space:]]+//' | sed -E 's/[[:space:]].*//')
+    goRetestPackages+=($failedPkg)
+done
+echo "Tests FAILED!!! To re-run the ${#goRetestPackages[@]} failed packages, execute:"
+echo "go test ${goRetestPackages[@]} ${goTestArgs[@]}"
+
+exit 1

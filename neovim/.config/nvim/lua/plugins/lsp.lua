@@ -62,8 +62,9 @@ return { -- LSP Configuration & Plugins
 
 			-- Enable the following language servers
 			-- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-			local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'lua_ls', 'gopls' }
-			local defaults = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'lua_ls' }
+			local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'lua_ls', 'terraformls',
+				'gopls' }
+			local defaults = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'lua_ls', 'terraformls' }
 
 			-- Ensure the servers above are installed
 			require('mason-lspconfig').setup {
