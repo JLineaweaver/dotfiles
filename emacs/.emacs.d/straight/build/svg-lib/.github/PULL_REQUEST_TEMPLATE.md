@@ -1,1 +1,0 @@
-/Users/josh.lineaweaver/.emacs.d/straight/repos/svg-lib/.github/PULL_REQUEST_TEMPLATE.md

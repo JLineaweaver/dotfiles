@@ -37,3 +37,6 @@ alias stocks='mop'
 alias doomr='~/.emacs.d/bin/doom refresh'
 
 alias gtb='gotestbranch'
+
+#send-it
+alias si='send-it --config=/Users/josh.lineaweaver/experimental/teams/container-apps/send-it-config/config.json'

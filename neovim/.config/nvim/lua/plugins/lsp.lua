@@ -128,7 +128,7 @@ return { -- LSP Configuration & Plugins
 							upgrade_dependency = true,
 							vendor = true,
 						},
-						buildFlags = { "-tags=kubeapiserver cri orchestrator kubelet" },
+						buildFlags = { "-tags=kubeapiserver docker cri orchestrator kubelet" },
 						directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules", "-bazel", "-bazel-dd-go", "-bazel-out", "-bazel-bin", "-bazel-testlogs" },
 						completeUnimported = true,
 						usePlaceholders = true,

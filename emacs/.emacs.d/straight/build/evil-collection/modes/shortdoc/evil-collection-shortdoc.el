@@ -1,1 +1,0 @@
-/Users/josh.lineaweaver/.emacs.d/straight/repos/evil-collection/modes/shortdoc/evil-collection-shortdoc.el

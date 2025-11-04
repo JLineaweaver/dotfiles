@@ -3,6 +3,7 @@ return {
 		"stevearc/conform.nvim",
 		config = function()
 			require("conform").setup({
+				log_level = vim.log.levels.DEBUG,
 				formatters_by_ft = {
 					-- bazel = { "buildifier" },
 					-- bzl = { "buildifier" },
@@ -29,10 +30,11 @@ return {
 					toml = { "taplo" },
 					-- http://xmlsoft.org/xmllint.html
 					xml = { "xmllint" },
+					yaml = { "yamlfmt" },
 					-- https://github.com/koalaman/shellcheck
 					zsh = { "shellcheck" }
 				},
-				format_on_save = { async = false, quiet = false, lsp_fallback = true, timeout_ms = 3000, }
+				format_on_save = { async = false, quiet = false, lsp_fallback = true, timeout_ms = 3000, },
 			})
 		end,
 	},

@@ -1,1 +1,0 @@
-/Users/josh.lineaweaver/.emacs.d/straight/repos/kind-icon/kind-icon-pkg.el

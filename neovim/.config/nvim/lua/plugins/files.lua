@@ -18,6 +18,7 @@ return {
 			{ "<leader>fa",      "<cmd>lua require('fzf-lua').git_files()<CR>",                                                           "find git files" },
 			{ "<leader>fg",      "<cmd>lua require('fzf-lua').live_grep({ cmd = 'git grep --line-number --column --color=always' })<CR>", "live grep" },
 			{ "<leader>fs",      "<cmd>lua require('fzf-lua').lsp_document_symbols()<CR>",                                                "find symbols" },
+			{ "<leader>fc",      "<cmd>lua require('fzf-lua').git_diff()<CR>",                                                            "find changes" },
 			{ "<leader><space>", "<cmd>lua require('fzf-lua').buffers()<CR>",                                                             "find buffers" },
 		},
 	},

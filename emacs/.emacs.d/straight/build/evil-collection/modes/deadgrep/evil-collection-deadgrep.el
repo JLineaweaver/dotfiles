@@ -1,1 +1,0 @@
-/Users/josh.lineaweaver/.emacs.d/straight/repos/evil-collection/modes/deadgrep/evil-collection-deadgrep.el
