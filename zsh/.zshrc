@@ -14,7 +14,11 @@ export ZSH_CACHE_DIR="${ZSH}/cache"
 export ZSH_CUSTOM="${ZSH}/custom"
 
 #ZSH_THEME="spaceship"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+#ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Starship for theme
+eval "$(starship init zsh)"
+
 
 plugins=(
     git
@@ -25,7 +29,7 @@ plugins=(
     macos
     z)
 
-source $ZSH/oh-my-zsh.sh
+source "$ZSH"/oh-my-zsh.sh
 
 #auto complete smart case
 zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}'
@@ -51,7 +55,7 @@ function dockerclean() {
         docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes
 }
 function dbash () {
-    docker exec -ti `docker ps | grep $1 | awk '{ print $1 }'` bash
+    docker exec -ti $(docker ps | grep "$1" | awk '{ print $1 }') bash
 }
 alias dockerhelp="echo 'docker-compose up \ndocker ps \ndocker exec -it \$DockerIdOrName /bin/bash'"
 alias dc="docker-compose"
@@ -96,7 +100,8 @@ function master-to-main {
 
 #export XDG_CONFIG_HOME=~/.k9s
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
 
 # Add extra stuff to path
 export PATH="$HOME/.local/bin:$PATH"
