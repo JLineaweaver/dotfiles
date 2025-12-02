@@ -102,13 +102,14 @@ return { -- LSP Configuration & Plugins
 				root_markers = { "go.work", "go.mod", ".git" },
 				settings = {
 					gopls = {
+						-- Keep most analyses enabled - they're useful
 						analyses = {
-							fieldalignment = true,
 							nilness = true,
 							unusedparams = true,
 							unusedwrite = true,
 							useany = true,
 						},
+						-- Keep useful hints enabled
 						hints = {
 							assignVariableTypes = true,
 							compositeLiteralFields = true,
@@ -119,21 +120,41 @@ return { -- LSP Configuration & Plugins
 							rangeVariableTypes = true,
 						},
 						gofumpt = true,
+						-- Selective codelenses - disable only the most expensive
 						codelenses = {
 							gc_details = false,
 							generate = true,
 							regenerate_cgo = true,
-							run_govulncheck = true,
+							run_govulncheck = false, -- Expensive on large repos
 							test = true,
 							tidy = true,
-							upgrade_dependency = true,
+							upgrade_dependency = false, -- Can be slow
 							vendor = true,
 						},
 						buildFlags = { "-tags=kubeapiserver docker cri orchestrator kubelet" },
-						directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules", "-bazel", "-bazel-dd-go", "-bazel-out", "-bazel-bin", "-bazel-testlogs" },
+						-- Expanded directory filters for large monorepo
+						directoryFilters = {
+							"-.git",
+							"-.vscode",
+							"-.idea",
+							"-.vscode-test",
+							"-node_modules",
+							"-bazel",
+							"-bazel-dd-go",
+							"-bazel-out",
+							"-bazel-bin",
+							"-bazel-testlogs",
+							"-.github",
+							"-.devcontainer",
+							"-vendor",
+							"-testdata",
+						},
 						completeUnimported = true,
 						usePlaceholders = true,
-						staticcheck = true,
+						-- Disable staticcheck - very expensive on large codebases
+						staticcheck = false,
+						-- Performance tuning for large workspaces
+						expandWorkspaceToModule = false,
 					},
 				},
 			}

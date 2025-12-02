@@ -4,3 +4,6 @@ neovim/.local/*
 neovim/.config/nvim/old
 neovim/.config/nvim/plugin
 .luarc.json
+
+# Override global gitignore to allow claude/.claude/ specifically
+!claude/.claude/

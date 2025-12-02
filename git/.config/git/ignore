@@ -1,0 +1,46 @@
+# Global gitignore file
+# Configure with: git config --global core.excludesfile ~/.config/git/ignore
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vim/
+*.sublime-*
+
+# AI/Claude Code
+.claude/
+.cursor/
+.aider*
+.copilot/
+
+# Tags
+tags
+tags.lock
+tags.temp
+TAGS
+
+# Environment
+.env
+.env.local
+.envrc.local
+
+# Language specific
+*.pyc
+__pycache__/
+node_modules/
+*.log
+
+# OS
+Thumbs.db
+Desktop.ini
