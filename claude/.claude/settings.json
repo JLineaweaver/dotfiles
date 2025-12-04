@@ -4,7 +4,12 @@
     "marketplace-auto-update@datadog-claude-plugins": true,
     "dd@datadog-claude-plugins": true,
     "atlassian-remote-mcp@datadog-claude-plugins": true,
-    "osx-notifications@datadog-claude-plugins": true
+    "osx-notifications@datadog-claude-plugins": true,
+    "redblue@datadog-claude-plugins": true,
+    "go-code-reviewer@datadog-claude-plugins": true,
+    "python-code-reviewer@datadog-claude-plugins": true,
+    "user-config@datadog-claude-plugins": true,
+    "streaming-platform-operators@datadog-claude-plugins": true
   },
   "alwaysThinkingEnabled": true,
   "defaultMode": "plan"
