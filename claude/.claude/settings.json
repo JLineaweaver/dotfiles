@@ -12,5 +12,6 @@
     "streaming-platform-operators@datadog-claude-plugins": true
   },
   "alwaysThinkingEnabled": true,
-  "defaultMode": "plan"
+  "defaultMode": "plan",
+  "includeCoAuthoredBy": false
 }
