@@ -1,79 +1,32 @@
-return {
-	{
-		"folke/sidekick.nvim",
-		opts = {
-			-- add any options here
-			cli = {
-				mux = {
-					backend = "zellij",
-					enabled = true,
-				},
-			},
-		},
-		keys = {
-			{
-				"<tab>",
-				function()
-					-- if there is a next edit, jump to it, otherwise apply it if any
-					if not require("sidekick").nes_jump_or_apply() then
-						return "<Tab>" -- fallback to normal tab
-					end
-				end,
-				expr = true,
-				desc = "Goto/Apply Next Edit Suggestion",
-			},
-			{
-				"<c-.>",
-				function() require("sidekick.cli").toggle() end,
-				desc = "Sidekick Toggle",
-				mode = { "n", "t", "i", "x" },
-			},
-			{
-				"<leader>aa",
-				function() require("sidekick.cli").toggle() end,
-				desc = "Sidekick Toggle CLI",
-			},
-			{
-				"<leader>as",
-				function() require("sidekick.cli").select() end,
-				-- Or to select only installed tools:
-				-- require("sidekick.cli").select({ filter = { installed = true } })
-				desc = "Select CLI",
-			},
-			{
-				"<leader>ad",
-				function() require("sidekick.cli").close() end,
-				desc = "Detach a CLI Session",
-			},
-			{
-				"<leader>at",
-				function() require("sidekick.cli").send({ msg = "{this}" }) end,
-				mode = { "x", "n" },
-				desc = "Send This",
-			},
-			{
-				"<leader>af",
-				function() require("sidekick.cli").send({ msg = "{file}" }) end,
-				desc = "Send File",
-			},
-			{
-				"<leader>av",
-				function() require("sidekick.cli").send({ msg = "{selection}" }) end,
-				mode = { "x" },
-				desc = "Send Visual Selection",
-			},
-			{
-				"<leader>ap",
-				function() require("sidekick.cli").prompt() end,
-				mode = { "n", "x" },
-				desc = "Sidekick Select Prompt",
-			},
-			-- Example of a keybinding to open Claude directly
-			{
-				"<leader>ac",
-				function() require("sidekick.cli").toggle({ name = "claude", focus = true }) end,
-				desc = "Sidekick Toggle Claude",
-			},
-		},
-	}
-}
+-- Copy file path with line range to clipboard
+vim.keymap.set({ "n", "v" }, "<leader>ya", function()
+	local start_line, end_line
+	local mode = vim.fn.mode()
+
+	if mode == "v" or mode == "V" or mode == "\22" then
+		-- Visual mode: get selected range
+		start_line = vim.fn.line("v")
+		end_line = vim.fn.line(".")
+		if start_line > end_line then
+			start_line, end_line = end_line, start_line
+		end
+		vim.cmd("normal! \027") -- Exit visual mode
+	else
+		-- Normal mode: use current line
+		start_line = vim.fn.line(".")
+		end_line = start_line
+	end
+
+	local file_path = vim.fn.expand("%:.")
+	local result
+	if start_line == end_line then
+		result = string.format("@%s#L%d", file_path, start_line)
+	else
+		result = string.format("@%s#L%d-%d", file_path, start_line, end_line)
+	end
+
+	vim.fn.setreg("+", result)
+	vim.notify(string.format("Copied: %s", result), vim.log.levels.INFO)
+end, { desc = "Copy file path with line range" })
+
+return {}
